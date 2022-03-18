@@ -119,7 +119,7 @@ pub type Extrinsic = TestXt<Call, ()>;
 // 		.public()
 // }
 
-pub const TEACHER_ID: [u8; 32] = [
+pub const referee_id: [u8; 32] = [
 	228, 167, 81, 18, 204, 23, 38, 108, 155, 194, 90, 41, 194, 163, 58, 60, 89, 176, 227, 117, 233,
 	66, 197, 106, 239, 232, 113, 141, 216, 124, 78, 49,
 ];
@@ -146,7 +146,7 @@ pub fn new_test_ext() -> sp_io::TestExternalities {
 
 	pallet_balances::GenesisConfig::<Test> {
 		balances: vec![
-			(AccountId::from(Public::from_raw(TEACHER_ID)).into_account(), INITIAL_BALANCE),
+			(AccountId::from(Public::from_raw(referee_id)).into_account(), INITIAL_BALANCE),
 			(AccountId::from(Public::from_raw(STUDENT_ID)).into_account(), INITIAL_BALANCE),
 			(AccountId::from(Public::from_raw(EMPLOYER_ID)).into_account(), INITIAL_BALANCE),
 			(AccountId::from(Public::from_raw(MALICIOUS_ID)).into_account(), INITIAL_BALANCE),
@@ -211,7 +211,7 @@ fn insurance_index_from_coordinates() {
 #[test]
 fn mint_chunk() {
 	new_test_ext().execute_with(|| {
-		let teacher_hash = H256::from(TEACHER_ID);
+		let teacher_hash = H256::from(referee_id);
 		let chunk = 1;
 		assert_ok!(InsurancesModule::mint_chunk(teacher_hash.clone(), chunk));
 		assert_noop!(
@@ -237,7 +237,7 @@ fn mint_chunk() {
 #[test]
 fn was_insurance_used() {
 	new_test_ext().execute_with(|| {
-		let teacher_hash = H256::from(TEACHER_ID);
+		let teacher_hash = H256::from(referee_id);
 		let number = 1;
 		let coordinates = InsurancesModule::coordinates_from_insurance_index(number);
 		//Assert fresh insurances are unused
@@ -269,7 +269,7 @@ fn was_insurance_used() {
 #[test]
 fn mark_insurance_as_used() {
 	new_test_ext().execute_with(|| {
-		let teacher_hash = H256::from(TEACHER_ID);
+		let teacher_hash = H256::from(referee_id);
 		let number = 1;
 		assert_ok!(InsurancesModule::mark_insurance_as_used(
 			teacher_hash.clone(),
@@ -286,8 +286,8 @@ fn mark_insurance_as_used() {
 fn teacher_has_not_enough_balance() {
 	new_test_ext().execute_with(|| {
 		
-		let teacher: AccountId32 = AccountId32::new(TEACHER_ID);
-		let teacher_hash = H256::from(TEACHER_ID);
+		let teacher: AccountId32 = AccountId32::new(referee_id);
+		let teacher_hash = H256::from(referee_id);
 
 		//Data to be signed is represented as u8 array
 		//letter_id (u32) | teach_address [u8; 32] | stud_address [u8; 32] | amount (u128)
@@ -299,7 +299,7 @@ fn teacher_has_not_enough_balance() {
 
 		// Data to be signed by teacher:
 		// letter_id (u32) | teach_address [u8; 32] | stud_address [u8; 32] | amount (u128)
-		// 1 , TEACHER_ID, STUDENT_ID, 10 - see below:
+		// 1 , referee_id, STUDENT_ID, 10 - see below:
 		// [0, 0, 0, 1],
 		// [228,167,81,18,204,23,38,108,155,194,90,41,194,163,58,60,89,176,227,117,233,66,197,106,239,232,113,141,216,124,78,49],
 		// [178,77,57,242,36,161,83,238,138,176,187,13,7,59,100,92,45,157,163,43,133,176,199,22,118,202,133,229,161,199,255,75],
@@ -308,7 +308,7 @@ fn teacher_has_not_enough_balance() {
 		// Teacher signature: [96,20,15,21,11,137,10,192,129,3,154,34,203,118,28,19,176,54,165,181,227,156,70,197,73,86,226,111,137,243,69,95,41,74,25,254,228,34,212,189,141,134,194,44,229,172,27,43,67,73,73,58,61,63,37,176,120,195,153,198,46,42,231,129]
 		//
 		// DATA TO BE SIGNED BY STUDENT
-		// 1 , TEACHER_ID, STUDENT_ID, 10, TEACHER_SIGNATURE, EMPLOYER_ID
+		// 1 , referee_id, STUDENT_ID, 10, TEACHER_SIGNATURE, EMPLOYER_ID
 		// [0, 0, 0, 1],
 		// [228,167,81,18,204,23,38,108,155,194,90,41,194,163,58,60,89,176,227,117,233,66,197,106,239,232,113,141,216,124,78,49],
 		// [178,77,57,242,36,161,83,238,138,176,187,13,7,59,100,92,45,157,163,43,133,176,199,22,118,202,133,229,161,199,255,75],
@@ -328,11 +328,11 @@ fn teacher_has_not_enough_balance() {
 		];
 
 		
-		Balances::make_free_balance_be(&AccountId::from(Public::from_raw(TEACHER_ID)).into_account(), 9);
+		Balances::make_free_balance_be(&AccountId::from(Public::from_raw(referee_id)).into_account(), 9);
 		assert_noop!(InsurancesModule::reimburse(
-			Origin::signed(AccountId::from(Public::from_raw(TEACHER_ID)).into_account()),
+			Origin::signed(AccountId::from(Public::from_raw(referee_id)).into_account()),
 			1 as u32,
-			H256::from(TEACHER_ID),
+			H256::from(referee_id),
 			H256::from(STUDENT_ID),
 			H256::from(EMPLOYER_ID),
 			10,
@@ -347,7 +347,7 @@ fn teacher_has_not_enough_balance() {
 fn wrong_teacher_sign() {
 	new_test_ext().execute_with(|| {
 		
-		let teacher: AccountId32 = AccountId32::new(TEACHER_ID);
+		let teacher: AccountId32 = AccountId32::new(referee_id);
 
 		//Data to be signed is represented as u8 array
 		//letter_id (u32) | teach_address [u8; 32] | stud_address [u8; 32] | amount (u128)
@@ -359,7 +359,7 @@ fn wrong_teacher_sign() {
 
 		// Data to be signed by teacher:
 		// letter_id (u32) | teach_address [u8; 32] | stud_address [u8; 32] | amount (u128)
-		// 1 , TEACHER_ID, STUDENT_ID, 10 - see below:
+		// 1 , referee_id, STUDENT_ID, 10 - see below:
 		// [0, 0, 0, 1],
 		// [228,167,81,18,204,23,38,108,155,194,90,41,194,163,58,60,89,176,227,117,233,66,197,106,239,232,113,141,216,124,78,49],
 		// [178,77,57,242,36,161,83,238,138,176,187,13,7,59,100,92,45,157,163,43,133,176,199,22,118,202,133,229,161,199,255,75],
@@ -368,7 +368,7 @@ fn wrong_teacher_sign() {
 		// Teacher signature: [96,20,15,21,11,137,10,192,129,3,154,34,203,118,28,19,176,54,165,181,227,156,70,197,73,86,226,111,137,243,69,95,41,74,25,254,228,34,212,189,141,134,194,44,229,172,27,43,67,73,73,58,61,63,37,176,120,195,153,198,46,42,231,129]
 		//
 		// DATA TO BE SIGNED BY STUDENT
-		// 1 , TEACHER_ID, STUDENT_ID, 10, TEACHER_SIGNATURE, EMPLOYER_ID
+		// 1 , referee_id, STUDENT_ID, 10, TEACHER_SIGNATURE, EMPLOYER_ID
 		// [0, 0, 0, 1],
 		// [228,167,81,18,204,23,38,108,155,194,90,41,194,163,58,60,89,176,227,117,233,66,197,106,239,232,113,141,216,124,78,49],
 		// [178,77,57,242,36,161,83,238,138,176,187,13,7,59,100,92,45,157,163,43,133,176,199,22,118,202,133,229,161,199,255,75],
@@ -395,9 +395,9 @@ fn wrong_teacher_sign() {
 		];
 
 		assert_noop!(InsurancesModule::reimburse(
-			Origin::signed(AccountId::from(Public::from_raw(TEACHER_ID)).into_account()),
+			Origin::signed(AccountId::from(Public::from_raw(referee_id)).into_account()),
 			1 as u32,
-			H256::from(TEACHER_ID),
+			H256::from(referee_id),
 			H256::from(STUDENT_ID),
 			H256::from(EMPLOYER_ID),
 			10,
@@ -410,7 +410,7 @@ fn wrong_teacher_sign() {
 #[test]
 fn wrong_student_sign() {
 	new_test_ext().execute_with(|| {
-		let teacher: AccountId32 = AccountId32::new(TEACHER_ID);
+		let teacher: AccountId32 = AccountId32::new(referee_id);
 
 		//Data to be signed is represented as u8 array
 		//letter_id (u32) | teach_address [u8; 32] | stud_address [u8; 32] | amount (u128)
@@ -422,7 +422,7 @@ fn wrong_student_sign() {
 
 		// Data to be signed by teacher:
 		// letter_id (u32) | teach_address [u8; 32] | stud_address [u8; 32] | amount (u128)
-		// 1 , TEACHER_ID, STUDENT_ID, 10 - see below:
+		// 1 , referee_id, STUDENT_ID, 10 - see below:
 		// [0, 0, 0, 1],
 		// [228,167,81,18,204,23,38,108,155,194,90,41,194,163,58,60,89,176,227,117,233,66,197,106,239,232,113,141,216,124,78,49],
 		// [178,77,57,242,36,161,83,238,138,176,187,13,7,59,100,92,45,157,163,43,133,176,199,22,118,202,133,229,161,199,255,75],
@@ -431,7 +431,7 @@ fn wrong_student_sign() {
 		// Teacher signature: [96,20,15,21,11,137,10,192,129,3,154,34,203,118,28,19,176,54,165,181,227,156,70,197,73,86,226,111,137,243,69,95,41,74,25,254,228,34,212,189,141,134,194,44,229,172,27,43,67,73,73,58,61,63,37,176,120,195,153,198,46,42,231,129]
 		//
 		// DATA TO BE SIGNED BY STUDENT
-		// 1 , TEACHER_ID, STUDENT_ID, 10, TEACHER_SIGNATURE, EMPLOYER_ID
+		// 1 , referee_id, STUDENT_ID, 10, TEACHER_SIGNATURE, EMPLOYER_ID
 		// [0, 0, 0, 1],
 		// [228,167,81,18,204,23,38,108,155,194,90,41,194,163,58,60,89,176,227,117,233,66,197,106,239,232,113,141,216,124,78,49],
 		// [178,77,57,242,36,161,83,238,138,176,187,13,7,59,100,92,45,157,163,43,133,176,199,22,118,202,133,229,161,199,255,75],
@@ -455,9 +455,9 @@ fn wrong_student_sign() {
 		];
 
 		assert_noop!(InsurancesModule::reimburse(
-			Origin::signed(AccountId::from(Public::from_raw(TEACHER_ID)).into_account()),
+			Origin::signed(AccountId::from(Public::from_raw(referee_id)).into_account()),
 			1 as u32,
-			H256::from(TEACHER_ID),
+			H256::from(referee_id),
 			H256::from(STUDENT_ID),
 			H256::from(EMPLOYER_ID),
 			10,
@@ -470,8 +470,8 @@ fn wrong_student_sign() {
 #[test]
 fn successful_reimburce() {
 	new_test_ext().execute_with(|| {
-		let teacher: AccountId32 = AccountId32::new(TEACHER_ID);
-		let teacher_hash = H256::from(TEACHER_ID);
+		let teacher: AccountId32 = AccountId32::new(referee_id);
+		let teacher_hash = H256::from(referee_id);
 
 		//Data to be signed is represented as u8 array
 		//letter_id (u32) | teach_address [u8; 32] | stud_address [u8; 32] | amount (u128)
@@ -483,7 +483,7 @@ fn successful_reimburce() {
 
 		// Data to be signed by teacher:
 		// letter_id (u32) | teach_address [u8; 32] | stud_address [u8; 32] | amount (u128)
-		// 1 , TEACHER_ID, STUDENT_ID, 10 - see below:
+		// 1 , referee_id, STUDENT_ID, 10 - see below:
 		// [0, 0, 0, 1],
 		// [228,167,81,18,204,23,38,108,155,194,90,41,194,163,58,60,89,176,227,117,233,66,197,106,239,232,113,141,216,124,78,49],
 		// [178,77,57,242,36,161,83,238,138,176,187,13,7,59,100,92,45,157,163,43,133,176,199,22,118,202,133,229,161,199,255,75],
@@ -492,7 +492,7 @@ fn successful_reimburce() {
 		// Teacher signature: [96,20,15,21,11,137,10,192,129,3,154,34,203,118,28,19,176,54,165,181,227,156,70,197,73,86,226,111,137,243,69,95,41,74,25,254,228,34,212,189,141,134,194,44,229,172,27,43,67,73,73,58,61,63,37,176,120,195,153,198,46,42,231,129]
 		//
 		// DATA TO BE SIGNED BY STUDENT
-		// 1 , TEACHER_ID, STUDENT_ID, 10, TEACHER_SIGNATURE, EMPLOYER_ID
+		// 1 , referee_id, STUDENT_ID, 10, TEACHER_SIGNATURE, EMPLOYER_ID
 		// [0, 0, 0, 1],
 		// [228,167,81,18,204,23,38,108,155,194,90,41,194,163,58,60,89,176,227,117,233,66,197,106,239,232,113,141,216,124,78,49],
 		// [178,77,57,242,36,161,83,238,138,176,187,13,7,59,100,92,45,157,163,43,133,176,199,22,118,202,133,229,161,199,255,75],
@@ -516,12 +516,12 @@ fn successful_reimburce() {
 			InsurancesModule::was_insurance_used(teacher_hash.clone(), number),
 			false
 		);
-		let teacher: AccountId32 = AccountId32::new(TEACHER_ID);
+		let teacher: AccountId32 = AccountId32::new(referee_id);
 
 		assert_ok!(InsurancesModule::reimburse(
-			Origin::signed(AccountId::from(Public::from_raw(TEACHER_ID)).into_account()),
+			Origin::signed(AccountId::from(Public::from_raw(referee_id)).into_account()),
 			1 as u32,
-			H256::from(TEACHER_ID),
+			H256::from(referee_id),
 			H256::from(STUDENT_ID),
 			H256::from(EMPLOYER_ID),
 			10,
@@ -535,9 +535,9 @@ fn successful_reimburce() {
 		);
 
 		assert_noop!(InsurancesModule::reimburse(
-			Origin::signed(AccountId::from(Public::from_raw(TEACHER_ID)).into_account()),
+			Origin::signed(AccountId::from(Public::from_raw(referee_id)).into_account()),
 			1 as u32,
-			H256::from(TEACHER_ID),
+			H256::from(referee_id),
 			H256::from(STUDENT_ID),
 			H256::from(EMPLOYER_ID),
 			10,

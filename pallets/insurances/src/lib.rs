@@ -120,7 +120,7 @@ pub mod pallet {
 		pub fn reimburse(
 			origin: OriginFor<T>,
 			letter_id: u32,
-			teacher_id: H256,
+			referee_id: H256,
 			student_id: H256,
 			employer_id: H256,
 			ask_price: BalanceOf<T>,
@@ -130,7 +130,7 @@ pub mod pallet {
 		{
 			let sender = ensure_signed(origin)?;
 
-			// 1 , TEACHER_ID, STUDENT_ID, 10 - see below
+			// 1 , referee_id, STUDENT_ID, 10 - see below
 		// [0, 0, 0, 1],
 		// [228,167,81,18,204,23,38,108,155,194,90,41,194,163,58,60,89,176,227,117,233,66,197,106,239,232,113,141,216,124,78,49],
 		// [178,77,57,242,36,161,83,238,138,176,187,13,7,59,100,92,45,157,163,43,133,176,199,22,118,202,133,229,161,199,255,75],
@@ -138,7 +138,7 @@ pub mod pallet {
 		// or in line:
 
 			let letter_id_bytes = &letter_id.to_be_bytes();
-			let teacher_id_bytes = teacher_id.as_bytes();
+			let referee_id_bytes = referee_id.as_bytes();
 			let employer_id_bytes = employer_id.as_bytes();
 			let student_id_bytes = student_id.as_bytes();
 			
@@ -147,12 +147,12 @@ pub mod pallet {
 
 			let mut skill_receipt_data = Vec::new();
 			skill_receipt_data.extend_from_slice(letter_id_bytes);
-			skill_receipt_data.extend_from_slice(teacher_id_bytes);
+			skill_receipt_data.extend_from_slice(referee_id_bytes);
 			skill_receipt_data.extend_from_slice(student_id_bytes);
 			skill_receipt_data.extend_from_slice(ask_price_bytes);
 
 			ensure!(
-				Self::signature_is_valid(teacher_sign.clone(), skill_receipt_data.clone(), teacher_id.clone()),
+				Self::signature_is_valid(teacher_sign.clone(), skill_receipt_data.clone(), referee_id.clone()),
 				Error::<T>::InvalidTeacherSign
 			);
 
@@ -166,18 +166,18 @@ pub mod pallet {
 			);
 
 			ensure!(
-				! Self::was_insurance_used(teacher_id, letter_id as usize),
+				! Self::was_insurance_used(referee_id, letter_id as usize),
 				Error::<T>::InvalidatedLetter
 			);
 
 			T::Currency::transfer(
-				&Self::account_id_from(teacher_id_bytes),
+				&Self::account_id_from(referee_id_bytes),
 				&Self::account_id_from(employer_id_bytes),
 				ask_price,
 				ExistenceRequirement::KeepAlive,
 			).map_err(|_| Error::<T>::TeacherBalanceIsNotEnough)?;
 
-			Self::mark_insurance_as_used(teacher_id, letter_id as usize);
+			Self::mark_insurance_as_used(referee_id, letter_id as usize);
 
 			Ok(().into())
 		}
