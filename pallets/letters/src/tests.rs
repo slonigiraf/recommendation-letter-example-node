@@ -119,12 +119,12 @@ pub type Extrinsic = TestXt<Call, ()>;
 // 		.public()
 // }
 
-pub const referee_id: [u8; 32] = [
+pub const REFEREE_ID: [u8; 32] = [
 	228, 167, 81, 18, 204, 23, 38, 108, 155, 194, 90, 41, 194, 163, 58, 60, 89, 176, 227, 117, 233,
 	66, 197, 106, 239, 232, 113, 141, 216, 124, 78, 49,
 ];
 
-pub const worker_id: [u8; 32] = [
+pub const WORKER_ID: [u8; 32] = [
 	178, 77, 57, 242, 36, 161, 83, 238, 138, 176, 187, 13, 7, 59, 100, 92, 45, 157, 163, 43, 133,
 	176, 199, 22, 118, 202, 133, 229, 161, 199, 255, 75,
 ];
@@ -146,8 +146,8 @@ pub fn new_test_ext() -> sp_io::TestExternalities {
 
 	pallet_balances::GenesisConfig::<Test> {
 		balances: vec![
-			(AccountId::from(Public::from_raw(referee_id)).into_account(), INITIAL_BALANCE),
-			(AccountId::from(Public::from_raw(worker_id)).into_account(), INITIAL_BALANCE),
+			(AccountId::from(Public::from_raw(REFEREE_ID)).into_account(), INITIAL_BALANCE),
+			(AccountId::from(Public::from_raw(WORKER_ID)).into_account(), INITIAL_BALANCE),
 			(AccountId::from(Public::from_raw(EMPLOYER_ID)).into_account(), INITIAL_BALANCE),
 			(AccountId::from(Public::from_raw(MALICIOUS_ID)).into_account(), INITIAL_BALANCE),
 		],
@@ -211,7 +211,7 @@ fn letter_index_from_coordinates() {
 #[test]
 fn mint_chunk() {
 	new_test_ext().execute_with(|| {
-		let referee_hash = H256::from(referee_id);
+		let referee_hash = H256::from(REFEREE_ID);
 		let chunk = 1;
 		assert_ok!(LettersModule::mint_chunk(referee_hash.clone(), chunk));
 		assert_noop!(
@@ -237,7 +237,7 @@ fn mint_chunk() {
 #[test]
 fn was_letter_canceled() {
 	new_test_ext().execute_with(|| {
-		let referee_hash = H256::from(referee_id);
+		let referee_hash = H256::from(REFEREE_ID);
 		let number = 1;
 		let coordinates = LettersModule::coordinates_from_letter_index(number);
 		//Assert fresh letters are unused
@@ -269,7 +269,7 @@ fn was_letter_canceled() {
 #[test]
 fn mark_letter_as_fraud() {
 	new_test_ext().execute_with(|| {
-		let referee_hash = H256::from(referee_id);
+		let referee_hash = H256::from(REFEREE_ID);
 		let number = 1;
 		assert_ok!(LettersModule::mark_letter_as_fraud(
 			referee_hash.clone(),
@@ -286,8 +286,8 @@ fn mark_letter_as_fraud() {
 fn referee_has_not_enough_balance() {
 	new_test_ext().execute_with(|| {
 		
-		let referee: AccountId32 = AccountId32::new(referee_id);
-		let referee_hash = H256::from(referee_id);
+		let referee: AccountId32 = AccountId32::new(REFEREE_ID);
+		let referee_hash = H256::from(REFEREE_ID);
 
 		//Data to be signed is represented as u8 array
 		//letter_id (u32) | teach_address [u8; 32] | stud_address [u8; 32] | amount (u128)
@@ -299,7 +299,7 @@ fn referee_has_not_enough_balance() {
 
 		// Data to be signed by referee:
 		// letter_id (u32) | teach_address [u8; 32] | stud_address [u8; 32] | amount (u128)
-		// 1 , referee_id, worker_id, 10 - see below:
+		// 1 , REFEREE_ID, WORKER_ID, 10 - see below:
 		// [0, 0, 0, 1],
 		// [228,167,81,18,204,23,38,108,155,194,90,41,194,163,58,60,89,176,227,117,233,66,197,106,239,232,113,141,216,124,78,49],
 		// [178,77,57,242,36,161,83,238,138,176,187,13,7,59,100,92,45,157,163,43,133,176,199,22,118,202,133,229,161,199,255,75],
@@ -308,7 +308,7 @@ fn referee_has_not_enough_balance() {
 		// Referee signature: [96,20,15,21,11,137,10,192,129,3,154,34,203,118,28,19,176,54,165,181,227,156,70,197,73,86,226,111,137,243,69,95,41,74,25,254,228,34,212,189,141,134,194,44,229,172,27,43,67,73,73,58,61,63,37,176,120,195,153,198,46,42,231,129]
 		//
 		// DATA TO BE SIGNED BY STUDENT
-		// 1 , referee_id, worker_id, 10, referee_signATURE, EMPLOYER_ID
+		// 1 , REFEREE_ID, WORKER_ID, 10, referee_signATURE, EMPLOYER_ID
 		// [0, 0, 0, 1],
 		// [228,167,81,18,204,23,38,108,155,194,90,41,194,163,58,60,89,176,227,117,233,66,197,106,239,232,113,141,216,124,78,49],
 		// [178,77,57,242,36,161,83,238,138,176,187,13,7,59,100,92,45,157,163,43,133,176,199,22,118,202,133,229,161,199,255,75],
@@ -328,12 +328,12 @@ fn referee_has_not_enough_balance() {
 		];
 
 		
-		Balances::make_free_balance_be(&AccountId::from(Public::from_raw(referee_id)).into_account(), 9);
+		Balances::make_free_balance_be(&AccountId::from(Public::from_raw(REFEREE_ID)).into_account(), 9);
 		assert_noop!(LettersModule::reimburse(
-			Origin::signed(AccountId::from(Public::from_raw(referee_id)).into_account()),
+			Origin::signed(AccountId::from(Public::from_raw(REFEREE_ID)).into_account()),
 			1 as u32,
-			H256::from(referee_id),
-			H256::from(worker_id),
+			H256::from(REFEREE_ID),
+			H256::from(WORKER_ID),
 			H256::from(EMPLOYER_ID),
 			10,
 			H512::from(referee_signature),
@@ -347,7 +347,7 @@ fn referee_has_not_enough_balance() {
 fn wrong_referee_sign() {
 	new_test_ext().execute_with(|| {
 		
-		let referee: AccountId32 = AccountId32::new(referee_id);
+		let referee: AccountId32 = AccountId32::new(REFEREE_ID);
 
 		//Data to be signed is represented as u8 array
 		//letter_id (u32) | teach_address [u8; 32] | stud_address [u8; 32] | amount (u128)
@@ -359,7 +359,7 @@ fn wrong_referee_sign() {
 
 		// Data to be signed by referee:
 		// letter_id (u32) | teach_address [u8; 32] | stud_address [u8; 32] | amount (u128)
-		// 1 , referee_id, worker_id, 10 - see below:
+		// 1 , REFEREE_ID, WORKER_ID, 10 - see below:
 		// [0, 0, 0, 1],
 		// [228,167,81,18,204,23,38,108,155,194,90,41,194,163,58,60,89,176,227,117,233,66,197,106,239,232,113,141,216,124,78,49],
 		// [178,77,57,242,36,161,83,238,138,176,187,13,7,59,100,92,45,157,163,43,133,176,199,22,118,202,133,229,161,199,255,75],
@@ -368,7 +368,7 @@ fn wrong_referee_sign() {
 		// Referee signature: [96,20,15,21,11,137,10,192,129,3,154,34,203,118,28,19,176,54,165,181,227,156,70,197,73,86,226,111,137,243,69,95,41,74,25,254,228,34,212,189,141,134,194,44,229,172,27,43,67,73,73,58,61,63,37,176,120,195,153,198,46,42,231,129]
 		//
 		// DATA TO BE SIGNED BY STUDENT
-		// 1 , referee_id, worker_id, 10, referee_signATURE, EMPLOYER_ID
+		// 1 , REFEREE_ID, WORKER_ID, 10, referee_signATURE, EMPLOYER_ID
 		// [0, 0, 0, 1],
 		// [228,167,81,18,204,23,38,108,155,194,90,41,194,163,58,60,89,176,227,117,233,66,197,106,239,232,113,141,216,124,78,49],
 		// [178,77,57,242,36,161,83,238,138,176,187,13,7,59,100,92,45,157,163,43,133,176,199,22,118,202,133,229,161,199,255,75],
@@ -395,10 +395,10 @@ fn wrong_referee_sign() {
 		];
 
 		assert_noop!(LettersModule::reimburse(
-			Origin::signed(AccountId::from(Public::from_raw(referee_id)).into_account()),
+			Origin::signed(AccountId::from(Public::from_raw(REFEREE_ID)).into_account()),
 			1 as u32,
-			H256::from(referee_id),
-			H256::from(worker_id),
+			H256::from(REFEREE_ID),
+			H256::from(WORKER_ID),
 			H256::from(EMPLOYER_ID),
 			10,
 			H512::from(wrong_referee_signature),
@@ -410,7 +410,7 @@ fn wrong_referee_sign() {
 #[test]
 fn wrong_worker_sign() {
 	new_test_ext().execute_with(|| {
-		let referee: AccountId32 = AccountId32::new(referee_id);
+		let referee: AccountId32 = AccountId32::new(REFEREE_ID);
 
 		//Data to be signed is represented as u8 array
 		//letter_id (u32) | teach_address [u8; 32] | stud_address [u8; 32] | amount (u128)
@@ -422,7 +422,7 @@ fn wrong_worker_sign() {
 
 		// Data to be signed by referee:
 		// letter_id (u32) | teach_address [u8; 32] | stud_address [u8; 32] | amount (u128)
-		// 1 , referee_id, worker_id, 10 - see below:
+		// 1 , REFEREE_ID, WORKER_ID, 10 - see below:
 		// [0, 0, 0, 1],
 		// [228,167,81,18,204,23,38,108,155,194,90,41,194,163,58,60,89,176,227,117,233,66,197,106,239,232,113,141,216,124,78,49],
 		// [178,77,57,242,36,161,83,238,138,176,187,13,7,59,100,92,45,157,163,43,133,176,199,22,118,202,133,229,161,199,255,75],
@@ -431,7 +431,7 @@ fn wrong_worker_sign() {
 		// Referee signature: [96,20,15,21,11,137,10,192,129,3,154,34,203,118,28,19,176,54,165,181,227,156,70,197,73,86,226,111,137,243,69,95,41,74,25,254,228,34,212,189,141,134,194,44,229,172,27,43,67,73,73,58,61,63,37,176,120,195,153,198,46,42,231,129]
 		//
 		// DATA TO BE SIGNED BY STUDENT
-		// 1 , referee_id, worker_id, 10, referee_signATURE, EMPLOYER_ID
+		// 1 , REFEREE_ID, WORKER_ID, 10, referee_signATURE, EMPLOYER_ID
 		// [0, 0, 0, 1],
 		// [228,167,81,18,204,23,38,108,155,194,90,41,194,163,58,60,89,176,227,117,233,66,197,106,239,232,113,141,216,124,78,49],
 		// [178,77,57,242,36,161,83,238,138,176,187,13,7,59,100,92,45,157,163,43,133,176,199,22,118,202,133,229,161,199,255,75],
@@ -455,10 +455,10 @@ fn wrong_worker_sign() {
 		];
 
 		assert_noop!(LettersModule::reimburse(
-			Origin::signed(AccountId::from(Public::from_raw(referee_id)).into_account()),
+			Origin::signed(AccountId::from(Public::from_raw(REFEREE_ID)).into_account()),
 			1 as u32,
-			H256::from(referee_id),
-			H256::from(worker_id),
+			H256::from(REFEREE_ID),
+			H256::from(WORKER_ID),
 			H256::from(EMPLOYER_ID),
 			10,
 			H512::from(referee_signature),
@@ -470,8 +470,8 @@ fn wrong_worker_sign() {
 #[test]
 fn successful_reimburce() {
 	new_test_ext().execute_with(|| {
-		let referee: AccountId32 = AccountId32::new(referee_id);
-		let referee_hash = H256::from(referee_id);
+		let referee: AccountId32 = AccountId32::new(REFEREE_ID);
+		let referee_hash = H256::from(REFEREE_ID);
 
 		//Data to be signed is represented as u8 array
 		//letter_id (u32) | teach_address [u8; 32] | stud_address [u8; 32] | amount (u128)
@@ -483,7 +483,7 @@ fn successful_reimburce() {
 
 		// Data to be signed by referee:
 		// letter_id (u32) | teach_address [u8; 32] | stud_address [u8; 32] | amount (u128)
-		// 1 , referee_id, worker_id, 10 - see below:
+		// 1 , REFEREE_ID, WORKER_ID, 10 - see below:
 		// [0, 0, 0, 1],
 		// [228,167,81,18,204,23,38,108,155,194,90,41,194,163,58,60,89,176,227,117,233,66,197,106,239,232,113,141,216,124,78,49],
 		// [178,77,57,242,36,161,83,238,138,176,187,13,7,59,100,92,45,157,163,43,133,176,199,22,118,202,133,229,161,199,255,75],
@@ -492,7 +492,7 @@ fn successful_reimburce() {
 		// Referee signature: [96,20,15,21,11,137,10,192,129,3,154,34,203,118,28,19,176,54,165,181,227,156,70,197,73,86,226,111,137,243,69,95,41,74,25,254,228,34,212,189,141,134,194,44,229,172,27,43,67,73,73,58,61,63,37,176,120,195,153,198,46,42,231,129]
 		//
 		// DATA TO BE SIGNED BY STUDENT
-		// 1 , referee_id, worker_id, 10, referee_signATURE, EMPLOYER_ID
+		// 1 , REFEREE_ID, WORKER_ID, 10, referee_signATURE, EMPLOYER_ID
 		// [0, 0, 0, 1],
 		// [228,167,81,18,204,23,38,108,155,194,90,41,194,163,58,60,89,176,227,117,233,66,197,106,239,232,113,141,216,124,78,49],
 		// [178,77,57,242,36,161,83,238,138,176,187,13,7,59,100,92,45,157,163,43,133,176,199,22,118,202,133,229,161,199,255,75],
@@ -516,13 +516,13 @@ fn successful_reimburce() {
 			LettersModule::was_letter_canceled(referee_hash.clone(), number),
 			false
 		);
-		let referee: AccountId32 = AccountId32::new(referee_id);
+		let referee: AccountId32 = AccountId32::new(REFEREE_ID);
 
 		assert_ok!(LettersModule::reimburse(
-			Origin::signed(AccountId::from(Public::from_raw(referee_id)).into_account()),
+			Origin::signed(AccountId::from(Public::from_raw(REFEREE_ID)).into_account()),
 			1 as u32,
-			H256::from(referee_id),
-			H256::from(worker_id),
+			H256::from(REFEREE_ID),
+			H256::from(WORKER_ID),
 			H256::from(EMPLOYER_ID),
 			10,
 			H512::from(referee_signature),
@@ -535,10 +535,10 @@ fn successful_reimburce() {
 		);
 
 		assert_noop!(LettersModule::reimburse(
-			Origin::signed(AccountId::from(Public::from_raw(referee_id)).into_account()),
+			Origin::signed(AccountId::from(Public::from_raw(REFEREE_ID)).into_account()),
 			1 as u32,
-			H256::from(referee_id),
-			H256::from(worker_id),
+			H256::from(REFEREE_ID),
+			H256::from(WORKER_ID),
 			H256::from(EMPLOYER_ID),
 			10,
 			H512::from(referee_signature),
