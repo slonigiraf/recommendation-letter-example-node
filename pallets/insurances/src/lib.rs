@@ -255,7 +255,7 @@ impl<T: Config> Pallet<T> {
 		let index = number%INSURANCE_PER_CHUNK;
 		LetterCoordinates { chunk, index }
 	}
-	fn insurance_index_from_coordinates(coordinates: LetterCoordinates) -> usize {
+	fn letter_index_from_coordinates(coordinates: LetterCoordinates) -> usize {
 		coordinates.chunk*INSURANCE_PER_CHUNK+coordinates.index
 	}
 
