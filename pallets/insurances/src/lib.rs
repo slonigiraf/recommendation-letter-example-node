@@ -105,6 +105,7 @@ pub mod pallet {
 		InvalidStudentSign,
 		InvalidInsuranceAmount,
 		TeacherBalanceIsNotEnough,
+		InvalidatedLetter,
 	}
 
 	#[pallet::pallet]
@@ -162,6 +163,11 @@ pub mod pallet {
 			ensure!(
 				Self::signature_is_valid(student_sign, skill_insurance_data, student_id.clone()),
 				Error::<T>::InvalidStudentSign
+			);
+
+			ensure!(
+				! Self::was_insurance_used(teacher_id, insurance_id as usize),
+				Error::<T>::InvalidatedLetter
 			);
 
 			T::Currency::transfer(
@@ -274,7 +280,7 @@ impl<T: Config> Pallet<T> {
 		insurance_number: usize,
 	) -> DispatchResult {
 		let coordinates = Self::coordinates_from_insurance_index(insurance_number);
-		if(!Self::chunk_exists(teacher, coordinates.chunk)){
+		if !Self::chunk_exists(teacher, coordinates.chunk) {
 			Self::mint_chunk(teacher, coordinates.chunk);
 		}
 		let mut data = <OwnedInsurancesArray<T>>::get((teacher.clone(), coordinates.chunk as u64));

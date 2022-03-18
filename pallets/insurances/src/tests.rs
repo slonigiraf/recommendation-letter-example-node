@@ -533,5 +533,16 @@ fn successful_reimburce() {
 			InsurancesModule::was_insurance_used(teacher_hash.clone(), number),
 			true
 		);
+
+		assert_noop!(InsurancesModule::reimburse(
+			Origin::signed(AccountId::from(Public::from_raw(TEACHER_ID)).into_account()),
+			1 as u32,
+			H256::from(TEACHER_ID),
+			H256::from(STUDENT_ID),
+			H256::from(EMPLOYER_ID),
+			10,
+			H512::from(teacher_signature),
+			H512::from(wrong_student_signature)
+		), Error::<Test>::InvalidatedLetter);
 	});
 }
