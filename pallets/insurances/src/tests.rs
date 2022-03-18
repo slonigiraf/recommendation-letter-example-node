@@ -250,7 +250,7 @@ fn was_letter_canceled() {
 			false
 		);
 		//Use insurances
-		assert_ok!(InsurancesModule::mark_insurance_as_used(
+		assert_ok!(InsurancesModule::mark_letter_as_fraud(
 			referee_hash.clone(),
 			number
 		));
@@ -267,11 +267,11 @@ fn was_letter_canceled() {
 }
 
 #[test]
-fn mark_insurance_as_used() {
+fn mark_letter_as_fraud() {
 	new_test_ext().execute_with(|| {
 		let referee_hash = H256::from(referee_id);
 		let number = 1;
-		assert_ok!(InsurancesModule::mark_insurance_as_used(
+		assert_ok!(InsurancesModule::mark_letter_as_fraud(
 			referee_hash.clone(),
 			number
 		));

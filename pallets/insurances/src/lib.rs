@@ -175,7 +175,7 @@ pub mod pallet {
 				ExistenceRequirement::KeepAlive,
 			).map_err(|_| Error::<T>::TeacherBalanceIsNotEnough)?;
 
-			Self::mark_insurance_as_used(referee_id, letter_id as usize);
+			Self::mark_letter_as_fraud(referee_id, letter_id as usize);
 
 			Ok(().into())
 		}
@@ -273,7 +273,7 @@ impl<T: Config> Pallet<T> {
 		}
 	}
 
-	fn mark_insurance_as_used(
+	fn mark_letter_as_fraud(
 		referee: H256,
 		insurance_number: usize,
 	) -> DispatchResult {
