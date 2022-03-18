@@ -1,6 +1,6 @@
 use super::*;
 
-use crate as insurances;
+use crate as letters;
 use frame_support::{assert_noop, assert_ok, parameter_types};
 use sp_core::H256;
 use sp_runtime::{
@@ -26,7 +26,7 @@ frame_support::construct_runtime!(
 	{
 		System: frame_system::{Pallet, Call, Config, Storage, Event<T>},
 		Balances: pallet_balances::{Pallet, Call, Storage, Config<T>, Event<T>},
-		LettersModule: insurances::{Pallet, Call, Storage, Event<T>, Config},
+		LettersModule: letters::{Pallet, Call, Storage, Event<T>, Config},
 	}
 );
 
@@ -240,7 +240,7 @@ fn was_letter_canceled() {
 		let referee_hash = H256::from(referee_id);
 		let number = 1;
 		let coordinates = LettersModule::coordinates_from_letter_index(number);
-		//Assert fresh insurances are unused
+		//Assert fresh letters are unused
 		assert_ok!(LettersModule::mint_chunk(
 			referee_hash.clone(),
 			coordinates.chunk
@@ -249,7 +249,7 @@ fn was_letter_canceled() {
 			LettersModule::was_letter_canceled(referee_hash.clone(), number),
 			false
 		);
-		//Use insurances
+		//Use letters
 		assert_ok!(LettersModule::mark_letter_as_fraud(
 			referee_hash.clone(),
 			number
@@ -258,7 +258,7 @@ fn was_letter_canceled() {
 			LettersModule::was_letter_canceled(referee_hash.clone(), number),
 			true
 		);
-		//Assert insurances in other chunks are unused
+		//Assert letters in other chunks are unused
 		assert_eq!(
 			LettersModule::was_letter_canceled(referee_hash.clone(), 1001),
 			false

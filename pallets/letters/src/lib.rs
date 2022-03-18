@@ -69,9 +69,9 @@ pub mod pallet {
 	pub type BalanceOf<T> = <<T as Config>::Currency as Currency<<T as frame_system::Config>::AccountId>>::Balance;
 
 	//Letter storage
-	//Keeps track of what accounts issued which insurances
+	//Keeps track of what accounts issued which letters
 	#[pallet::storage]
-	#[pallet::getter(fn insurance_of_owner_by_index)]
+	#[pallet::getter(fn letter_of_owner_by_index)]
 	pub(super) type OwnedLetersArray<T: Config> =
 	StorageMap<_, Twox64Concat, (H256, u64), Vec<bool>, ValueQuery>;
 	//
@@ -93,7 +93,7 @@ pub mod pallet {
 		T::AccountId = "AccountId", LetterIndexOf<T> = "LetterIndex", Option<BalanceOf<T>> = "Option<Balance>", BalanceOf<T> = "Balance",
 	)]
 	pub enum Event<T: Config> {
-		/// A insurance is created. \[owner, letter_id, insurance\]
+		/// A letter is created. \[owner, letter_id, letter\]
 		LetterCreated(H256, u64),
 	}
 
@@ -154,12 +154,12 @@ pub mod pallet {
 				Error::<T>::InvalidTeacherSign
 			);
 
-			let mut skill_insurance_data = skill_receipt_data;
-			skill_insurance_data.extend_from_slice(referee_sign.as_bytes());
-			skill_insurance_data.extend_from_slice(employer_id.as_bytes());
+			let mut skill_letter_data = skill_receipt_data;
+			skill_letter_data.extend_from_slice(referee_sign.as_bytes());
+			skill_letter_data.extend_from_slice(employer_id.as_bytes());
 
 			ensure!(
-				Self::signature_is_valid(worker_sign, skill_insurance_data, worker_id.clone()),
+				Self::signature_is_valid(worker_sign, skill_letter_data, worker_id.clone()),
 				Error::<T>::InvalidStudentSign
 			);
 
@@ -268,7 +268,7 @@ impl<T: Config> Pallet<T> {
 			false => false,
 			true => {
 				let data = <OwnedLetersArray<T>>::get((referee.clone(), coordinates.chunk as u64));
-				!data[coordinates.index]//used insurances marked as false
+				!data[coordinates.index]//used letters marked as false
 			}
 		}
 	}

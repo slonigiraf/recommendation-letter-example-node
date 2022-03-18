@@ -45,8 +45,8 @@ mod weights;
 /// Import the template pallet.
 pub use pallet_template;
 
-/// Import the insurances pallet.
-pub use pallet_insurances;
+/// Import the letters pallet.
+pub use pallet_letters;
 
 /// An index to a block.
 pub type BlockNumber = u32;
@@ -271,16 +271,16 @@ impl pallet_sudo::Config for Runtime {
 	type Call = Call;
 }
 
-/// Configure the pallet-insurances.
+/// Configure the pallet-letters.
 parameter_types! {
 	pub const DefaultDifficulty: u32 = 100000;
 }
 
-impl pallet_insurances::Config for Runtime {
+impl pallet_letters::Config for Runtime {
 	type Event = Event;
 	type Randomness = RandomnessCollectiveFlip;
 	type Currency = Balances;
-	type WeightInfo = weights::pallet_insurances::WeightInfo<Runtime>;
+	type WeightInfo = weights::pallet_letters::WeightInfo<Runtime>;
 	type DefaultDifficulty = DefaultDifficulty;
 }
 
@@ -307,7 +307,7 @@ construct_runtime!(
 		// Include the custom logic from the pallet-template in the runtime.
 		TemplateModule: pallet_template::{Pallet, Call, Storage, Event<T>},
 		// Substrate Letters pallet
-		Letters: pallet_insurances::{Pallet, Storage, Call, Event<T>, Config},
+		Letters: pallet_letters::{Pallet, Storage, Call, Event<T>, Config},
 	}
 );
 
@@ -519,7 +519,7 @@ impl_runtime_apis! {
 			add_benchmark!(params, batches, pallet_balances, Balances);
 			add_benchmark!(params, batches, pallet_timestamp, Timestamp);
 			add_benchmark!(params, batches, pallet_template, TemplateModule);
-			add_benchmark!(params, batches, pallet_insurances, Letters);
+			add_benchmark!(params, batches, pallet_letters, Letters);
 
 			if batches.is_empty() { return Err("Benchmark not found for this pallet.".into()) }
 			Ok(batches)

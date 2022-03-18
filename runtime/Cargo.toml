@@ -16,9 +16,9 @@ default-features = false
 path = '../pallets/template'
 version = '3.0.0-monthly-2021-09+1'
 
-[dependencies.pallet-insurances]
+[dependencies.pallet-letters]
 default-features = false
-path = '../pallets/insurances'
+path = '../pallets/letters'
 
 [build-dependencies.substrate-wasm-builder]
 git = 'https://github.com/paritytech/substrate.git'

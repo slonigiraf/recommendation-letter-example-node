@@ -1,1 +1,1 @@
-pub mod pallet_insurances;
+pub mod pallet_letters;

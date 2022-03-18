@@ -3580,7 +3580,7 @@ dependencies = [
  "pallet-aura",
  "pallet-balances",
  "pallet-grandpa",
- "pallet-insurances",
+ "pallet-letters",
  "pallet-randomness-collective-flip",
  "pallet-sudo",
  "pallet-template",
@@ -3829,7 +3829,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "pallet-insurances"
+name = "pallet-letters"
 version = "0.1.0"
 dependencies = [
  "frame-benchmarking",
