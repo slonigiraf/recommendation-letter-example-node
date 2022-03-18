@@ -527,6 +527,6 @@ fn successful_reimburce() {
 			10,
 			H512::from(referee_signature),
 			H512::from(worker_signature)
-		), Error::<Test>::InvalidatedLetter);
+		), Error::<Test>::LetterWasInvalidatedBefore);
 	});
 }
