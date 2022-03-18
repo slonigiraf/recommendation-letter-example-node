@@ -56,8 +56,6 @@ pub struct InsuranceCoordinates {
 pub mod pallet {
 	use super::*;
 
-
-
 	/// Configure the pallet by specifying the parameters and types it depends on.
 	#[pallet::config]
 	pub trait Config: frame_system::Config {
@@ -166,7 +164,7 @@ pub mod pallet {
 			);
 
 			ensure!(
-				! Self::was_insurance_used(referee_id, letter_id as usize),
+				! Self::was_letter_used(referee_id, letter_id as usize),
 				Error::<T>::InvalidatedLetter
 			);
 
@@ -261,7 +259,7 @@ impl<T: Config> Pallet<T> {
 		coordinates.chunk*INSURANCE_PER_CHUNK+coordinates.index
 	}
 
-	fn was_insurance_used(
+	fn was_letter_used(
 		teacher: H256,
 		number: usize,
 	) -> bool {

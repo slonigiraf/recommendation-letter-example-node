@@ -235,7 +235,7 @@ fn mint_chunk() {
 }
 
 #[test]
-fn was_insurance_used() {
+fn was_letter_used() {
 	new_test_ext().execute_with(|| {
 		let teacher_hash = H256::from(referee_id);
 		let number = 1;
@@ -246,7 +246,7 @@ fn was_insurance_used() {
 			coordinates.chunk
 		));
 		assert_eq!(
-			InsurancesModule::was_insurance_used(teacher_hash.clone(), number),
+			InsurancesModule::was_letter_used(teacher_hash.clone(), number),
 			false
 		);
 		//Use insurances
@@ -255,12 +255,12 @@ fn was_insurance_used() {
 			number
 		));
 		assert_eq!(
-			InsurancesModule::was_insurance_used(teacher_hash.clone(), number),
+			InsurancesModule::was_letter_used(teacher_hash.clone(), number),
 			true
 		);
 		//Assert insurances in other chunks are unused
 		assert_eq!(
-			InsurancesModule::was_insurance_used(teacher_hash.clone(), 1001),
+			InsurancesModule::was_letter_used(teacher_hash.clone(), 1001),
 			false
 		);
 	});
@@ -276,7 +276,7 @@ fn mark_insurance_as_used() {
 			number
 		));
 		assert_eq!(
-			InsurancesModule::was_insurance_used(teacher_hash.clone(), number),
+			InsurancesModule::was_letter_used(teacher_hash.clone(), number),
 			true
 		);
 	});
@@ -513,7 +513,7 @@ fn successful_reimburce() {
 
 		let number = 1;
 		assert_eq!(
-			InsurancesModule::was_insurance_used(teacher_hash.clone(), number),
+			InsurancesModule::was_letter_used(teacher_hash.clone(), number),
 			false
 		);
 		let teacher: AccountId32 = AccountId32::new(referee_id);
@@ -530,7 +530,7 @@ fn successful_reimburce() {
 		));
 
 		assert_eq!(
-			InsurancesModule::was_insurance_used(teacher_hash.clone(), number),
+			InsurancesModule::was_letter_used(teacher_hash.clone(), number),
 			true
 		);
 
