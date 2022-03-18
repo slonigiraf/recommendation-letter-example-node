@@ -99,10 +99,10 @@ pub mod pallet {
 
 	#[pallet::error]
 	pub enum Error<T> {
-		InvalidTeacherSign,
+		InvalidRefereeSign,
 		InvalidStudentSign,
 		InvalidLetterAmount,
-		TeacherBalanceIsNotEnough,
+		RefereeBalanceIsNotEnough,
 		InvalidatedLetter,
 	}
 
@@ -151,7 +151,7 @@ pub mod pallet {
 
 			ensure!(
 				Self::signature_is_valid(referee_sign.clone(), skill_receipt_data.clone(), referee_id.clone()),
-				Error::<T>::InvalidTeacherSign
+				Error::<T>::InvalidRefereeSign
 			);
 
 			let mut skill_letter_data = skill_receipt_data;
@@ -173,7 +173,7 @@ pub mod pallet {
 				&Self::account_id_from(employer_id_bytes),
 				ask_price,
 				ExistenceRequirement::KeepAlive,
-			).map_err(|_| Error::<T>::TeacherBalanceIsNotEnough)?;
+			).map_err(|_| Error::<T>::RefereeBalanceIsNotEnough)?;
 
 			Self::mark_letter_as_fraud(referee_id, letter_id as usize);
 
