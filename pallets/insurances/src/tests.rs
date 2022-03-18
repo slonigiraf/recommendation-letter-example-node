@@ -323,7 +323,7 @@ fn teacher_has_not_enough_balance() {
 			189, 141, 134, 194, 44, 229, 172, 27, 43, 67, 73, 73, 58, 61, 63, 37, 176, 120, 195,
 			153, 198, 46, 42, 231, 129,
 		];
-		let student_signature: [u8; 64] = [
+		let worker_signature: [u8; 64] = [
 			26,120,24,104,3,27,112,127,84,114,11,38,69,99,18,156,199,205,48,85,45,51,152,245,204,74,36,170,247,46,132,102,210,160,84,40,136,45,35,90,153,65,168,33,203,1,43,149,33,202,206,115,138,21,54,180,127,192,23,84,146,24,208,128,
 		];
 
@@ -337,7 +337,7 @@ fn teacher_has_not_enough_balance() {
 			H256::from(EMPLOYER_ID),
 			10,
 			H512::from(referee_signature),
-			H512::from(student_signature)
+			H512::from(worker_signature)
 		), Error::<Test>::TeacherBalanceIsNotEnough);
 
 	});
@@ -390,7 +390,7 @@ fn wrong_referee_sign() {
 			189, 141, 134, 194, 44, 229, 172, 27, 43, 67, 73, 73, 58, 61, 63, 37, 176, 120, 195,
 			153, 198, 46, 42, 231, 129,
 		];
-		let student_signature: [u8; 64] = [
+		let worker_signature: [u8; 64] = [
 			26,120,24,104,3,27,112,127,84,114,11,38,69,99,18,156,199,205,48,85,45,51,152,245,204,74,36,170,247,46,132,102,210,160,84,40,136,45,35,90,153,65,168,33,203,1,43,149,33,202,206,115,138,21,54,180,127,192,23,84,146,24,208,128,
 		];
 
@@ -402,13 +402,13 @@ fn wrong_referee_sign() {
 			H256::from(EMPLOYER_ID),
 			10,
 			H512::from(wrong_referee_signature),
-			H512::from(student_signature)
+			H512::from(worker_signature)
 		), Error::<Test>::InvalidTeacherSign);
 	});
 }
 
 #[test]
-fn wrong_student_sign() {
+fn wrong_worker_sign() {
 	new_test_ext().execute_with(|| {
 		let teacher: AccountId32 = AccountId32::new(referee_id);
 
@@ -447,10 +447,10 @@ fn wrong_student_sign() {
 			153, 198, 46, 42, 231, 129,
 		];
 
-		// let student_signature: [u8; 64] = [
+		// let worker_signature: [u8; 64] = [
 		// 	26,120,24,104,3,27,112,127,84,114,11,38,69,99,18,156,199,205,48,85,45,51,152,245,204,74,36,170,247,46,132,102,210,160,84,40,136,45,35,90,153,65,168,33,203,1,43,149,33,202,206,115,138,21,54,180,127,192,23,84,146,24,208,128,
 		// ];
-		let wrong_student_signature: [u8; 64] = [
+		let wrong_worker_signature: [u8; 64] = [
 			0,120,24,104,3,27,112,127,84,114,11,38,69,99,18,156,199,205,48,85,45,51,152,245,204,74,36,170,247,46,132,102,210,160,84,40,136,45,35,90,153,65,168,33,203,1,43,149,33,202,206,115,138,21,54,180,127,192,23,84,146,24,208,128,
 		];
 
@@ -462,7 +462,7 @@ fn wrong_student_sign() {
 			H256::from(EMPLOYER_ID),
 			10,
 			H512::from(referee_signature),
-			H512::from(wrong_student_signature)
+			H512::from(wrong_worker_signature)
 		), Error::<Test>::InvalidStudentSign);
 	});
 }
@@ -507,7 +507,7 @@ fn successful_reimburce() {
 			189, 141, 134, 194, 44, 229, 172, 27, 43, 67, 73, 73, 58, 61, 63, 37, 176, 120, 195,
 			153, 198, 46, 42, 231, 129,
 		];
-		let student_signature: [u8; 64] = [
+		let worker_signature: [u8; 64] = [
 			26,120,24,104,3,27,112,127,84,114,11,38,69,99,18,156,199,205,48,85,45,51,152,245,204,74,36,170,247,46,132,102,210,160,84,40,136,45,35,90,153,65,168,33,203,1,43,149,33,202,206,115,138,21,54,180,127,192,23,84,146,24,208,128,
 		];
 
@@ -526,7 +526,7 @@ fn successful_reimburce() {
 			H256::from(EMPLOYER_ID),
 			10,
 			H512::from(referee_signature),
-			H512::from(student_signature)
+			H512::from(worker_signature)
 		));
 
 		assert_eq!(
@@ -542,7 +542,7 @@ fn successful_reimburce() {
 			H256::from(EMPLOYER_ID),
 			10,
 			H512::from(referee_signature),
-			H512::from(student_signature)
+			H512::from(worker_signature)
 		), Error::<Test>::InvalidatedLetter);
 	});
 }

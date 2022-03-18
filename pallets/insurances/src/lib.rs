@@ -125,7 +125,7 @@ pub mod pallet {
 			employer_id: H256,
 			ask_price: BalanceOf<T>,
 			referee_sign: H512,
-			student_sign: H512,
+			worker_sign: H512,
 		) -> DispatchResultWithPostInfo 
 		{
 			let sender = ensure_signed(origin)?;
@@ -161,7 +161,7 @@ pub mod pallet {
 			skill_insurance_data.extend_from_slice(employer_id.as_bytes());
 
 			ensure!(
-				Self::signature_is_valid(student_sign, skill_insurance_data, worker_id.clone()),
+				Self::signature_is_valid(worker_sign, skill_insurance_data, worker_id.clone()),
 				Error::<T>::InvalidStudentSign
 			);
 
