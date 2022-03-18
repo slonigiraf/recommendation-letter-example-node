@@ -85,8 +85,7 @@ pub mod pallet {
 		T::AccountId = "AccountId", LetterIndexOf<T> = "LetterIndex", Option<BalanceOf<T>> = "Option<Balance>", BalanceOf<T> = "Balance",
 	)]
 	pub enum Event<T: Config> {
-		/// A letter is created. \[owner, letter_id, letter\]
-		LetterCreated(H256, u64),
+		ReimbursementHappened(H256, u64),
 	}
 
 	#[pallet::error]
@@ -95,7 +94,7 @@ pub mod pallet {
 		InvalidWorkerSign,
 		InvalidLetterAmount,
 		RefereeBalanceIsNotEnough,
-		InvalidatedLetter,
+		LetterWasMarkedAsFraudBefore,
 	}
 
 	#[pallet::pallet]
@@ -157,7 +156,7 @@ pub mod pallet {
 
 			ensure!(
 				! Self::was_letter_canceled(referee_id, letter_id as usize),
-				Error::<T>::InvalidatedLetter
+				Error::<T>::LetterWasMarkedAsFraudBefore
 			);
 
 			T::Currency::transfer(
@@ -230,7 +229,7 @@ impl<T: Config> Pallet<T> {
 		<OwnedLetersArray<T>>::insert((to.clone(), chunk as u64), data);
 		
 		// Write `mint` event
-		Self::deposit_event(Event::LetterCreated(to, chunk as u64));
+		Self::deposit_event(Event::ReimbursementHappened(to, chunk as u64));
 		
 		Ok(())
 	}
@@ -278,7 +277,7 @@ impl<T: Config> Pallet<T> {
 		<OwnedLetersArray<T>>::remove((referee.clone(), coordinates.chunk as u64));
 		<OwnedLetersArray<T>>::insert((referee.clone(), coordinates.chunk as u64), data);
 		// Write `mint` event
-		Self::deposit_event(Event::LetterCreated(referee, coordinates.chunk as u64));
+		Self::deposit_event(Event::ReimbursementHappened(referee, coordinates.chunk as u64));
 		Ok(())
 	}
 }
