@@ -170,16 +170,16 @@ pub fn new_test_ext() -> sp_io::TestExternalities {
 use hex_literal::hex;
 
 #[test]
-fn coordinates_from_insurance_index() {
+fn coordinates_from_letter_index() {
 	new_test_ext().execute_with(|| {
-		let coordinates = InsurancesModule::coordinates_from_insurance_index(0);
+		let coordinates = InsurancesModule::coordinates_from_letter_index(0);
 		assert_eq!(coordinates.chunk, 0);
 		assert_eq!(coordinates.index, 0);
 		//
-		let coordinates = InsurancesModule::coordinates_from_insurance_index(1);
+		let coordinates = InsurancesModule::coordinates_from_letter_index(1);
 		assert_eq!(coordinates.chunk, 0);
 		assert_eq!(coordinates.index, 1);
-		let coordinates = InsurancesModule::coordinates_from_insurance_index(1001);
+		let coordinates = InsurancesModule::coordinates_from_letter_index(1001);
 		assert_eq!(coordinates.chunk, 1);
 		assert_eq!(coordinates.index, 1);
 	});
@@ -239,7 +239,7 @@ fn was_letter_used() {
 	new_test_ext().execute_with(|| {
 		let referee_hash = H256::from(referee_id);
 		let number = 1;
-		let coordinates = InsurancesModule::coordinates_from_insurance_index(number);
+		let coordinates = InsurancesModule::coordinates_from_letter_index(number);
 		//Assert fresh insurances are unused
 		assert_ok!(InsurancesModule::mint_chunk(
 			referee_hash.clone(),

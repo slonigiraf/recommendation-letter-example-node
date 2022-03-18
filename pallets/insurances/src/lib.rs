@@ -250,7 +250,7 @@ impl<T: Config> Pallet<T> {
 		<OwnedLetersArray<T>>::contains_key((to.clone(), chunk as u64))
 	}
 
-	fn coordinates_from_insurance_index(number: usize) -> InsuranceCoordinates {
+	fn coordinates_from_letter_index(number: usize) -> InsuranceCoordinates {
 		let chunk = number/INSURANCE_PER_CHUNK;
 		let index = number%INSURANCE_PER_CHUNK;
 		InsuranceCoordinates { chunk, index }
@@ -263,7 +263,7 @@ impl<T: Config> Pallet<T> {
 		referee: H256,
 		number: usize,
 	) -> bool {
-		let coordinates = Self::coordinates_from_insurance_index(number);
+		let coordinates = Self::coordinates_from_letter_index(number);
 		match Self::chunk_exists(referee, coordinates.chunk) {
 			false => false,
 			true => {
@@ -277,7 +277,7 @@ impl<T: Config> Pallet<T> {
 		referee: H256,
 		insurance_number: usize,
 	) -> DispatchResult {
-		let coordinates = Self::coordinates_from_insurance_index(insurance_number);
+		let coordinates = Self::coordinates_from_letter_index(insurance_number);
 		if !Self::chunk_exists(referee, coordinates.chunk) {
 			Self::mint_chunk(referee, coordinates.chunk);
 		}
