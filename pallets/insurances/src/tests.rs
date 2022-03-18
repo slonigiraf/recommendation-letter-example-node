@@ -211,24 +211,24 @@ fn insurance_index_from_coordinates() {
 #[test]
 fn mint_chunk() {
 	new_test_ext().execute_with(|| {
-		let teacher_hash = H256::from(referee_id);
+		let referee_hash = H256::from(referee_id);
 		let chunk = 1;
-		assert_ok!(InsurancesModule::mint_chunk(teacher_hash.clone(), chunk));
+		assert_ok!(InsurancesModule::mint_chunk(referee_hash.clone(), chunk));
 		assert_noop!(
-			InsurancesModule::mint_chunk(teacher_hash.clone(), chunk),
+			InsurancesModule::mint_chunk(referee_hash.clone(), chunk),
 			"Insurance already contains_key"
 		);
 
 		assert_eq!(
-			InsurancesModule::chunk_exists(teacher_hash.clone(), chunk),
+			InsurancesModule::chunk_exists(referee_hash.clone(), chunk),
 			true
 		);
 		assert_eq!(
-			InsurancesModule::chunk_exists(teacher_hash.clone(), 0),
+			InsurancesModule::chunk_exists(referee_hash.clone(), 0),
 			false
 		);
 		assert_eq!(
-			InsurancesModule::chunk_exists(teacher_hash.clone(), 2),
+			InsurancesModule::chunk_exists(referee_hash.clone(), 2),
 			false
 		);
 	});
@@ -237,30 +237,30 @@ fn mint_chunk() {
 #[test]
 fn was_letter_used() {
 	new_test_ext().execute_with(|| {
-		let teacher_hash = H256::from(referee_id);
+		let referee_hash = H256::from(referee_id);
 		let number = 1;
 		let coordinates = InsurancesModule::coordinates_from_insurance_index(number);
 		//Assert fresh insurances are unused
 		assert_ok!(InsurancesModule::mint_chunk(
-			teacher_hash.clone(),
+			referee_hash.clone(),
 			coordinates.chunk
 		));
 		assert_eq!(
-			InsurancesModule::was_letter_used(teacher_hash.clone(), number),
+			InsurancesModule::was_letter_used(referee_hash.clone(), number),
 			false
 		);
 		//Use insurances
 		assert_ok!(InsurancesModule::mark_insurance_as_used(
-			teacher_hash.clone(),
+			referee_hash.clone(),
 			number
 		));
 		assert_eq!(
-			InsurancesModule::was_letter_used(teacher_hash.clone(), number),
+			InsurancesModule::was_letter_used(referee_hash.clone(), number),
 			true
 		);
 		//Assert insurances in other chunks are unused
 		assert_eq!(
-			InsurancesModule::was_letter_used(teacher_hash.clone(), 1001),
+			InsurancesModule::was_letter_used(referee_hash.clone(), 1001),
 			false
 		);
 	});
@@ -269,25 +269,25 @@ fn was_letter_used() {
 #[test]
 fn mark_insurance_as_used() {
 	new_test_ext().execute_with(|| {
-		let teacher_hash = H256::from(referee_id);
+		let referee_hash = H256::from(referee_id);
 		let number = 1;
 		assert_ok!(InsurancesModule::mark_insurance_as_used(
-			teacher_hash.clone(),
+			referee_hash.clone(),
 			number
 		));
 		assert_eq!(
-			InsurancesModule::was_letter_used(teacher_hash.clone(), number),
+			InsurancesModule::was_letter_used(referee_hash.clone(), number),
 			true
 		);
 	});
 }
 
 #[test]
-fn teacher_has_not_enough_balance() {
+fn referee_has_not_enough_balance() {
 	new_test_ext().execute_with(|| {
 		
-		let teacher: AccountId32 = AccountId32::new(referee_id);
-		let teacher_hash = H256::from(referee_id);
+		let referee: AccountId32 = AccountId32::new(referee_id);
+		let referee_hash = H256::from(referee_id);
 
 		//Data to be signed is represented as u8 array
 		//letter_id (u32) | teach_address [u8; 32] | stud_address [u8; 32] | amount (u128)
@@ -297,7 +297,7 @@ fn teacher_has_not_enough_balance() {
 
 		// amount (10 as u128): [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10] // println!("amount (10 as u128): {:?}", (10 as u128).to_be_bytes());
 
-		// Data to be signed by teacher:
+		// Data to be signed by referee:
 		// letter_id (u32) | teach_address [u8; 32] | stud_address [u8; 32] | amount (u128)
 		// 1 , referee_id, worker_id, 10 - see below:
 		// [0, 0, 0, 1],
@@ -347,7 +347,7 @@ fn teacher_has_not_enough_balance() {
 fn wrong_referee_sign() {
 	new_test_ext().execute_with(|| {
 		
-		let teacher: AccountId32 = AccountId32::new(referee_id);
+		let referee: AccountId32 = AccountId32::new(referee_id);
 
 		//Data to be signed is represented as u8 array
 		//letter_id (u32) | teach_address [u8; 32] | stud_address [u8; 32] | amount (u128)
@@ -357,7 +357,7 @@ fn wrong_referee_sign() {
 
 		// amount (10 as u128): [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10] // println!("amount (10 as u128): {:?}", (10 as u128).to_be_bytes());
 
-		// Data to be signed by teacher:
+		// Data to be signed by referee:
 		// letter_id (u32) | teach_address [u8; 32] | stud_address [u8; 32] | amount (u128)
 		// 1 , referee_id, worker_id, 10 - see below:
 		// [0, 0, 0, 1],
@@ -410,7 +410,7 @@ fn wrong_referee_sign() {
 #[test]
 fn wrong_worker_sign() {
 	new_test_ext().execute_with(|| {
-		let teacher: AccountId32 = AccountId32::new(referee_id);
+		let referee: AccountId32 = AccountId32::new(referee_id);
 
 		//Data to be signed is represented as u8 array
 		//letter_id (u32) | teach_address [u8; 32] | stud_address [u8; 32] | amount (u128)
@@ -420,7 +420,7 @@ fn wrong_worker_sign() {
 
 		// amount (10 as u128): [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10] // println!("amount (10 as u128): {:?}", (10 as u128).to_be_bytes());
 
-		// Data to be signed by teacher:
+		// Data to be signed by referee:
 		// letter_id (u32) | teach_address [u8; 32] | stud_address [u8; 32] | amount (u128)
 		// 1 , referee_id, worker_id, 10 - see below:
 		// [0, 0, 0, 1],
@@ -470,8 +470,8 @@ fn wrong_worker_sign() {
 #[test]
 fn successful_reimburce() {
 	new_test_ext().execute_with(|| {
-		let teacher: AccountId32 = AccountId32::new(referee_id);
-		let teacher_hash = H256::from(referee_id);
+		let referee: AccountId32 = AccountId32::new(referee_id);
+		let referee_hash = H256::from(referee_id);
 
 		//Data to be signed is represented as u8 array
 		//letter_id (u32) | teach_address [u8; 32] | stud_address [u8; 32] | amount (u128)
@@ -481,7 +481,7 @@ fn successful_reimburce() {
 
 		// amount (10 as u128): [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10] // println!("amount (10 as u128): {:?}", (10 as u128).to_be_bytes());
 
-		// Data to be signed by teacher:
+		// Data to be signed by referee:
 		// letter_id (u32) | teach_address [u8; 32] | stud_address [u8; 32] | amount (u128)
 		// 1 , referee_id, worker_id, 10 - see below:
 		// [0, 0, 0, 1],
@@ -513,10 +513,10 @@ fn successful_reimburce() {
 
 		let number = 1;
 		assert_eq!(
-			InsurancesModule::was_letter_used(teacher_hash.clone(), number),
+			InsurancesModule::was_letter_used(referee_hash.clone(), number),
 			false
 		);
-		let teacher: AccountId32 = AccountId32::new(referee_id);
+		let referee: AccountId32 = AccountId32::new(referee_id);
 
 		assert_ok!(InsurancesModule::reimburse(
 			Origin::signed(AccountId::from(Public::from_raw(referee_id)).into_account()),
@@ -530,7 +530,7 @@ fn successful_reimburce() {
 		));
 
 		assert_eq!(
-			InsurancesModule::was_letter_used(teacher_hash.clone(), number),
+			InsurancesModule::was_letter_used(referee_hash.clone(), number),
 			true
 		);
 

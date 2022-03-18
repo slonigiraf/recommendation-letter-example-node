@@ -197,10 +197,10 @@ impl<T: Config> Pallet<T> {
 
 	fn account_id_from(account_bytes: &[u8]) -> T::AccountId {
 		//
-		let teacher_bytes_array: [u8; 32] = Self::slice_to_array(account_bytes);
-		let teacher: AccountId32 = AccountId32::new(teacher_bytes_array);
-		let mut teacher_init_account32 = AccountId32::as_ref(&teacher);
-		T::AccountId::decode(&mut teacher_init_account32).unwrap_or_default()
+		let referee_bytes_array: [u8; 32] = Self::slice_to_array(account_bytes);
+		let referee: AccountId32 = AccountId32::new(referee_bytes_array);
+		let mut referee_init_account32 = AccountId32::as_ref(&referee);
+		T::AccountId::decode(&mut referee_init_account32).unwrap_or_default()
 	}
 			
 	fn signature_is_valid (
@@ -260,33 +260,33 @@ impl<T: Config> Pallet<T> {
 	}
 
 	fn was_letter_used(
-		teacher: H256,
+		referee: H256,
 		number: usize,
 	) -> bool {
 		let coordinates = Self::coordinates_from_insurance_index(number);
-		match Self::chunk_exists(teacher, coordinates.chunk) {
+		match Self::chunk_exists(referee, coordinates.chunk) {
 			false => false,
 			true => {
-				let data = <OwnedInsurancesArray<T>>::get((teacher.clone(), coordinates.chunk as u64));
+				let data = <OwnedInsurancesArray<T>>::get((referee.clone(), coordinates.chunk as u64));
 				!data[coordinates.index]//used insurances marked as false
 			}
 		}
 	}
 
 	fn mark_insurance_as_used(
-		teacher: H256,
+		referee: H256,
 		insurance_number: usize,
 	) -> DispatchResult {
 		let coordinates = Self::coordinates_from_insurance_index(insurance_number);
-		if !Self::chunk_exists(teacher, coordinates.chunk) {
-			Self::mint_chunk(teacher, coordinates.chunk);
+		if !Self::chunk_exists(referee, coordinates.chunk) {
+			Self::mint_chunk(referee, coordinates.chunk);
 		}
-		let mut data = <OwnedInsurancesArray<T>>::get((teacher.clone(), coordinates.chunk as u64));
+		let mut data = <OwnedInsurancesArray<T>>::get((referee.clone(), coordinates.chunk as u64));
 		data[coordinates.index] = false;
-		<OwnedInsurancesArray<T>>::remove((teacher.clone(), coordinates.chunk as u64));
-		<OwnedInsurancesArray<T>>::insert((teacher.clone(), coordinates.chunk as u64), data);
+		<OwnedInsurancesArray<T>>::remove((referee.clone(), coordinates.chunk as u64));
+		<OwnedInsurancesArray<T>>::insert((referee.clone(), coordinates.chunk as u64), data);
 		// Write `mint` event
-		Self::deposit_event(Event::InsuranceCreated(teacher, coordinates.chunk as u64));
+		Self::deposit_event(Event::InsuranceCreated(referee, coordinates.chunk as u64));
 		Ok(())
 	}
 }
