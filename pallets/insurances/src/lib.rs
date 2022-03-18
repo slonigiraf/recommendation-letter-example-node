@@ -95,7 +95,7 @@ pub mod pallet {
 		T::AccountId = "AccountId", InsuranceIndexOf<T> = "InsuranceIndex", Option<BalanceOf<T>> = "Option<Balance>", BalanceOf<T> = "Balance",
 	)]
 	pub enum Event<T: Config> {
-		/// A insurance is created. \[owner, insurance_id, insurance\]
+		/// A insurance is created. \[owner, letter_id, insurance\]
 		InsuranceCreated(H256, u64),
 	}
 
@@ -119,7 +119,7 @@ pub mod pallet {
 		#[pallet::weight(100)]
 		pub fn reimburse(
 			origin: OriginFor<T>,
-			insurance_id: u32,
+			letter_id: u32,
 			teacher_id: H256,
 			student_id: H256,
 			employer_id: H256,
@@ -137,7 +137,7 @@ pub mod pallet {
 		// [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10]
 		// or in line:
 
-			let insurance_id_bytes = &insurance_id.to_be_bytes();
+			let letter_id_bytes = &letter_id.to_be_bytes();
 			let teacher_id_bytes = teacher_id.as_bytes();
 			let employer_id_bytes = employer_id.as_bytes();
 			let student_id_bytes = student_id.as_bytes();
@@ -146,7 +146,7 @@ pub mod pallet {
 			let ask_price_bytes = &ask_price_u128.to_be_bytes();
 
 			let mut skill_receipt_data = Vec::new();
-			skill_receipt_data.extend_from_slice(insurance_id_bytes);
+			skill_receipt_data.extend_from_slice(letter_id_bytes);
 			skill_receipt_data.extend_from_slice(teacher_id_bytes);
 			skill_receipt_data.extend_from_slice(student_id_bytes);
 			skill_receipt_data.extend_from_slice(ask_price_bytes);
@@ -166,7 +166,7 @@ pub mod pallet {
 			);
 
 			ensure!(
-				! Self::was_insurance_used(teacher_id, insurance_id as usize),
+				! Self::was_insurance_used(teacher_id, letter_id as usize),
 				Error::<T>::InvalidatedLetter
 			);
 
@@ -177,7 +177,7 @@ pub mod pallet {
 				ExistenceRequirement::KeepAlive,
 			).map_err(|_| Error::<T>::TeacherBalanceIsNotEnough)?;
 
-			Self::mark_insurance_as_used(teacher_id, insurance_id as usize);
+			Self::mark_insurance_as_used(teacher_id, letter_id as usize);
 
 			Ok(().into())
 		}

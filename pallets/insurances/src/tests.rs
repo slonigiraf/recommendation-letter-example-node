@@ -290,15 +290,15 @@ fn teacher_has_not_enough_balance() {
 		let teacher_hash = H256::from(TEACHER_ID);
 
 		//Data to be signed is represented as u8 array
-		//insurance_id (u32) | teach_address [u8; 32] | stud_address [u8; 32] | amount (u128)
+		//letter_id (u32) | teach_address [u8; 32] | stud_address [u8; 32] | amount (u128)
 
-		// insurance_id (1): [0, 0, 0, 1] // println!("insurance_id (1 as u32): {:?}", (1 as u32).to_be_bytes());//
-		// insurance_id (2): [0, 0, 0, 2] // println!("insurance_id (2 as u32): {:?}", (2 as u32).to_be_bytes());
+		// letter_id (1): [0, 0, 0, 1] // println!("letter_id (1 as u32): {:?}", (1 as u32).to_be_bytes());//
+		// letter_id (2): [0, 0, 0, 2] // println!("letter_id (2 as u32): {:?}", (2 as u32).to_be_bytes());
 
 		// amount (10 as u128): [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10] // println!("amount (10 as u128): {:?}", (10 as u128).to_be_bytes());
 
 		// Data to be signed by teacher:
-		// insurance_id (u32) | teach_address [u8; 32] | stud_address [u8; 32] | amount (u128)
+		// letter_id (u32) | teach_address [u8; 32] | stud_address [u8; 32] | amount (u128)
 		// 1 , TEACHER_ID, STUDENT_ID, 10 - see below:
 		// [0, 0, 0, 1],
 		// [228,167,81,18,204,23,38,108,155,194,90,41,194,163,58,60,89,176,227,117,233,66,197,106,239,232,113,141,216,124,78,49],
@@ -350,15 +350,15 @@ fn wrong_teacher_sign() {
 		let teacher: AccountId32 = AccountId32::new(TEACHER_ID);
 
 		//Data to be signed is represented as u8 array
-		//insurance_id (u32) | teach_address [u8; 32] | stud_address [u8; 32] | amount (u128)
+		//letter_id (u32) | teach_address [u8; 32] | stud_address [u8; 32] | amount (u128)
 
-		// insurance_id (1): [0, 0, 0, 1] // println!("insurance_id (1 as u32): {:?}", (1 as u32).to_be_bytes());//
-		// insurance_id (2): [0, 0, 0, 2] // println!("insurance_id (2 as u32): {:?}", (2 as u32).to_be_bytes());
+		// letter_id (1): [0, 0, 0, 1] // println!("letter_id (1 as u32): {:?}", (1 as u32).to_be_bytes());//
+		// letter_id (2): [0, 0, 0, 2] // println!("letter_id (2 as u32): {:?}", (2 as u32).to_be_bytes());
 
 		// amount (10 as u128): [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10] // println!("amount (10 as u128): {:?}", (10 as u128).to_be_bytes());
 
 		// Data to be signed by teacher:
-		// insurance_id (u32) | teach_address [u8; 32] | stud_address [u8; 32] | amount (u128)
+		// letter_id (u32) | teach_address [u8; 32] | stud_address [u8; 32] | amount (u128)
 		// 1 , TEACHER_ID, STUDENT_ID, 10 - see below:
 		// [0, 0, 0, 1],
 		// [228,167,81,18,204,23,38,108,155,194,90,41,194,163,58,60,89,176,227,117,233,66,197,106,239,232,113,141,216,124,78,49],
@@ -413,15 +413,15 @@ fn wrong_student_sign() {
 		let teacher: AccountId32 = AccountId32::new(TEACHER_ID);
 
 		//Data to be signed is represented as u8 array
-		//insurance_id (u32) | teach_address [u8; 32] | stud_address [u8; 32] | amount (u128)
+		//letter_id (u32) | teach_address [u8; 32] | stud_address [u8; 32] | amount (u128)
 
-		// insurance_id (1): [0, 0, 0, 1] // println!("insurance_id (1 as u32): {:?}", (1 as u32).to_be_bytes());//
-		// insurance_id (2): [0, 0, 0, 2] // println!("insurance_id (2 as u32): {:?}", (2 as u32).to_be_bytes());
+		// letter_id (1): [0, 0, 0, 1] // println!("letter_id (1 as u32): {:?}", (1 as u32).to_be_bytes());//
+		// letter_id (2): [0, 0, 0, 2] // println!("letter_id (2 as u32): {:?}", (2 as u32).to_be_bytes());
 
 		// amount (10 as u128): [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10] // println!("amount (10 as u128): {:?}", (10 as u128).to_be_bytes());
 
 		// Data to be signed by teacher:
-		// insurance_id (u32) | teach_address [u8; 32] | stud_address [u8; 32] | amount (u128)
+		// letter_id (u32) | teach_address [u8; 32] | stud_address [u8; 32] | amount (u128)
 		// 1 , TEACHER_ID, STUDENT_ID, 10 - see below:
 		// [0, 0, 0, 1],
 		// [228,167,81,18,204,23,38,108,155,194,90,41,194,163,58,60,89,176,227,117,233,66,197,106,239,232,113,141,216,124,78,49],
@@ -474,15 +474,15 @@ fn successful_reimburce() {
 		let teacher_hash = H256::from(TEACHER_ID);
 
 		//Data to be signed is represented as u8 array
-		//insurance_id (u32) | teach_address [u8; 32] | stud_address [u8; 32] | amount (u128)
+		//letter_id (u32) | teach_address [u8; 32] | stud_address [u8; 32] | amount (u128)
 
-		// insurance_id (1): [0, 0, 0, 1] // println!("insurance_id (1 as u32): {:?}", (1 as u32).to_be_bytes());//
-		// insurance_id (2): [0, 0, 0, 2] // println!("insurance_id (2 as u32): {:?}", (2 as u32).to_be_bytes());
+		// letter_id (1): [0, 0, 0, 1] // println!("letter_id (1 as u32): {:?}", (1 as u32).to_be_bytes());//
+		// letter_id (2): [0, 0, 0, 2] // println!("letter_id (2 as u32): {:?}", (2 as u32).to_be_bytes());
 
 		// amount (10 as u128): [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10] // println!("amount (10 as u128): {:?}", (10 as u128).to_be_bytes());
 
 		// Data to be signed by teacher:
-		// insurance_id (u32) | teach_address [u8; 32] | stud_address [u8; 32] | amount (u128)
+		// letter_id (u32) | teach_address [u8; 32] | stud_address [u8; 32] | amount (u128)
 		// 1 , TEACHER_ID, STUDENT_ID, 10 - see below:
 		// [0, 0, 0, 1],
 		// [228,167,81,18,204,23,38,108,155,194,90,41,194,163,58,60,89,176,227,117,233,66,197,106,239,232,113,141,216,124,78,49],
