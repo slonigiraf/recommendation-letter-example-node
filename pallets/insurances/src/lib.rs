@@ -72,7 +72,7 @@ pub mod pallet {
 	//Keeps track of what accounts issued which insurances
 	#[pallet::storage]
 	#[pallet::getter(fn insurance_of_owner_by_index)]
-	pub(super) type OwnedInsurancesArray<T: Config> =
+	pub(super) type OwnedLetersArray<T: Config> =
 	StorageMap<_, Twox64Concat, (H256, u64), Vec<bool>, ValueQuery>;
 	//
 
@@ -229,13 +229,13 @@ impl<T: Config> Pallet<T> {
 		chunk: usize,
 	) -> DispatchResult {
 		ensure!(
-			!<OwnedInsurancesArray<T>>::contains_key((to.clone(), chunk as u64)),
+			!<OwnedLetersArray<T>>::contains_key((to.clone(), chunk as u64)),
 			"Insurance already contains_key"
 		);
 
 		let data = vec![true;INSURANCE_PER_CHUNK];
 		// Write Insurance counting information to storage.
-		<OwnedInsurancesArray<T>>::insert((to.clone(), chunk as u64), data);
+		<OwnedLetersArray<T>>::insert((to.clone(), chunk as u64), data);
 		
 		// Write `mint` event
 		Self::deposit_event(Event::InsuranceCreated(to, chunk as u64));
@@ -247,7 +247,7 @@ impl<T: Config> Pallet<T> {
 		to: H256,
 		chunk: usize,
 	) -> bool {
-		<OwnedInsurancesArray<T>>::contains_key((to.clone(), chunk as u64))
+		<OwnedLetersArray<T>>::contains_key((to.clone(), chunk as u64))
 	}
 
 	fn coordinates_from_insurance_index(number: usize) -> InsuranceCoordinates {
@@ -267,7 +267,7 @@ impl<T: Config> Pallet<T> {
 		match Self::chunk_exists(referee, coordinates.chunk) {
 			false => false,
 			true => {
-				let data = <OwnedInsurancesArray<T>>::get((referee.clone(), coordinates.chunk as u64));
+				let data = <OwnedLetersArray<T>>::get((referee.clone(), coordinates.chunk as u64));
 				!data[coordinates.index]//used insurances marked as false
 			}
 		}
@@ -281,10 +281,10 @@ impl<T: Config> Pallet<T> {
 		if !Self::chunk_exists(referee, coordinates.chunk) {
 			Self::mint_chunk(referee, coordinates.chunk);
 		}
-		let mut data = <OwnedInsurancesArray<T>>::get((referee.clone(), coordinates.chunk as u64));
+		let mut data = <OwnedLetersArray<T>>::get((referee.clone(), coordinates.chunk as u64));
 		data[coordinates.index] = false;
-		<OwnedInsurancesArray<T>>::remove((referee.clone(), coordinates.chunk as u64));
-		<OwnedInsurancesArray<T>>::insert((referee.clone(), coordinates.chunk as u64), data);
+		<OwnedLetersArray<T>>::remove((referee.clone(), coordinates.chunk as u64));
+		<OwnedLetersArray<T>>::insert((referee.clone(), coordinates.chunk as u64), data);
 		// Write `mint` event
 		Self::deposit_event(Event::InsuranceCreated(referee, coordinates.chunk as u64));
 		Ok(())
