@@ -124,7 +124,7 @@ pub mod pallet {
 			worker_id: H256,
 			employer_id: H256,
 			ask_price: BalanceOf<T>,
-			teacher_sign: H512,
+			referee_sign: H512,
 			student_sign: H512,
 		) -> DispatchResultWithPostInfo 
 		{
@@ -152,12 +152,12 @@ pub mod pallet {
 			skill_receipt_data.extend_from_slice(ask_price_bytes);
 
 			ensure!(
-				Self::signature_is_valid(teacher_sign.clone(), skill_receipt_data.clone(), referee_id.clone()),
+				Self::signature_is_valid(referee_sign.clone(), skill_receipt_data.clone(), referee_id.clone()),
 				Error::<T>::InvalidTeacherSign
 			);
 
 			let mut skill_insurance_data = skill_receipt_data;
-			skill_insurance_data.extend_from_slice(teacher_sign.as_bytes());
+			skill_insurance_data.extend_from_slice(referee_sign.as_bytes());
 			skill_insurance_data.extend_from_slice(employer_id.as_bytes());
 
 			ensure!(
