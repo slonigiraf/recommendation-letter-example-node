@@ -36,7 +36,7 @@ parameter_types! {
 }
 
 impl frame_system::Config for Test {
-	type BaseCallFilter = ();
+	type BaseCallFilter = frame_support::traits::Everything;
 	type BlockWeights = ();
 	type BlockLength = ();
 	type DbWeight = ();
@@ -542,7 +542,7 @@ fn successful_reimburce() {
 			H256::from(EMPLOYER_ID),
 			10,
 			H512::from(teacher_signature),
-			H512::from(wrong_student_signature)
+			H512::from(student_signature)
 		), Error::<Test>::InvalidatedLetter);
 	});
 }
