@@ -40,7 +40,7 @@ mod weights;
 
 pub use weights::WeightInfo;
 
-// Struct for holding Insurance information.
+// Struct for holding Letter information.
 pub struct LetterCoordinates {
 	chunk: usize,
 	index: usize,
@@ -68,7 +68,7 @@ pub mod pallet {
 	}
 	pub type BalanceOf<T> = <<T as Config>::Currency as Currency<<T as frame_system::Config>::AccountId>>::Balance;
 
-	//Insurance storage
+	//Letter storage
 	//Keeps track of what accounts issued which insurances
 	#[pallet::storage]
 	#[pallet::getter(fn insurance_of_owner_by_index)]
@@ -90,18 +90,18 @@ pub mod pallet {
 	#[pallet::event]
 	#[pallet::generate_deposit(pub(super) fn deposit_event)]
 	#[pallet::metadata(
-		T::AccountId = "AccountId", InsuranceIndexOf<T> = "InsuranceIndex", Option<BalanceOf<T>> = "Option<Balance>", BalanceOf<T> = "Balance",
+		T::AccountId = "AccountId", LetterIndexOf<T> = "LetterIndex", Option<BalanceOf<T>> = "Option<Balance>", BalanceOf<T> = "Balance",
 	)]
 	pub enum Event<T: Config> {
 		/// A insurance is created. \[owner, letter_id, insurance\]
-		InsuranceCreated(H256, u64),
+		LetterCreated(H256, u64),
 	}
 
 	#[pallet::error]
 	pub enum Error<T> {
 		InvalidTeacherSign,
 		InvalidStudentSign,
-		InvalidInsuranceAmount,
+		InvalidLetterAmount,
 		TeacherBalanceIsNotEnough,
 		InvalidatedLetter,
 	}
@@ -113,7 +113,7 @@ pub mod pallet {
 	#[pallet::call]
 	impl<T:Config> Pallet<T> where T::AccountId: From<<<Signature as Verify>::Signer as IdentifyAccount>::AccountId> {
 		// reimburse
-		// Insurance issuer should pay initially defined Balance sum
+		// Letter issuer should pay initially defined Balance sum
 		#[pallet::weight(100)]
 		pub fn reimburse(
 			origin: OriginFor<T>,
@@ -140,7 +140,7 @@ pub mod pallet {
 			let employer_id_bytes = employer_id.as_bytes();
 			let worker_id_bytes = worker_id.as_bytes();
 			
-			let ask_price_u128 = TryInto::<u128>::try_into(ask_price).map_err(|_| Error::<T>::InvalidInsuranceAmount)?;
+			let ask_price_u128 = TryInto::<u128>::try_into(ask_price).map_err(|_| Error::<T>::InvalidLetterAmount)?;
 			let ask_price_bytes = &ask_price_u128.to_be_bytes();
 
 			let mut skill_receipt_data = Vec::new();
@@ -223,22 +223,22 @@ impl<T: Config> Pallet<T> {
 		array
 	}
 
-	// Helper to mint a Insurance.
+	// Helper to mint a Letter.
 	fn mint_chunk(
 		to: H256,
 		chunk: usize,
 	) -> DispatchResult {
 		ensure!(
 			!<OwnedLetersArray<T>>::contains_key((to.clone(), chunk as u64)),
-			"Insurance already contains_key"
+			"Letter already contains_key"
 		);
 
 		let data = vec![true;INSURANCE_PER_CHUNK];
-		// Write Insurance counting information to storage.
+		// Write Letter counting information to storage.
 		<OwnedLetersArray<T>>::insert((to.clone(), chunk as u64), data);
 		
 		// Write `mint` event
-		Self::deposit_event(Event::InsuranceCreated(to, chunk as u64));
+		Self::deposit_event(Event::LetterCreated(to, chunk as u64));
 		
 		Ok(())
 	}
@@ -286,7 +286,7 @@ impl<T: Config> Pallet<T> {
 		<OwnedLetersArray<T>>::remove((referee.clone(), coordinates.chunk as u64));
 		<OwnedLetersArray<T>>::insert((referee.clone(), coordinates.chunk as u64), data);
 		// Write `mint` event
-		Self::deposit_event(Event::InsuranceCreated(referee, coordinates.chunk as u64));
+		Self::deposit_event(Event::LetterCreated(referee, coordinates.chunk as u64));
 		Ok(())
 	}
 }

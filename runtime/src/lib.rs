@@ -306,8 +306,8 @@ construct_runtime!(
 		Sudo: pallet_sudo::{Pallet, Call, Config<T>, Storage, Event<T>},
 		// Include the custom logic from the pallet-template in the runtime.
 		TemplateModule: pallet_template::{Pallet, Call, Storage, Event<T>},
-		// Substrate Insurances pallet
-		Insurances: pallet_insurances::{Pallet, Storage, Call, Event<T>, Config},
+		// Substrate Letters pallet
+		Letters: pallet_insurances::{Pallet, Storage, Call, Event<T>, Config},
 	}
 );
 
@@ -519,7 +519,7 @@ impl_runtime_apis! {
 			add_benchmark!(params, batches, pallet_balances, Balances);
 			add_benchmark!(params, batches, pallet_timestamp, Timestamp);
 			add_benchmark!(params, batches, pallet_template, TemplateModule);
-			add_benchmark!(params, batches, pallet_insurances, Insurances);
+			add_benchmark!(params, batches, pallet_insurances, Letters);
 
 			if batches.is_empty() { return Err("Benchmark not found for this pallet.".into()) }
 			Ok(batches)

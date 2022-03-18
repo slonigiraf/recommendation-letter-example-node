@@ -26,7 +26,7 @@ frame_support::construct_runtime!(
 	{
 		System: frame_system::{Pallet, Call, Config, Storage, Event<T>},
 		Balances: pallet_balances::{Pallet, Call, Storage, Config<T>, Event<T>},
-		InsurancesModule: insurances::{Pallet, Call, Storage, Event<T>, Config},
+		LettersModule: insurances::{Pallet, Call, Storage, Event<T>, Config},
 	}
 );
 
@@ -172,14 +172,14 @@ use hex_literal::hex;
 #[test]
 fn coordinates_from_letter_index() {
 	new_test_ext().execute_with(|| {
-		let coordinates = InsurancesModule::coordinates_from_letter_index(0);
+		let coordinates = LettersModule::coordinates_from_letter_index(0);
 		assert_eq!(coordinates.chunk, 0);
 		assert_eq!(coordinates.index, 0);
 		//
-		let coordinates = InsurancesModule::coordinates_from_letter_index(1);
+		let coordinates = LettersModule::coordinates_from_letter_index(1);
 		assert_eq!(coordinates.chunk, 0);
 		assert_eq!(coordinates.index, 1);
-		let coordinates = InsurancesModule::coordinates_from_letter_index(1001);
+		let coordinates = LettersModule::coordinates_from_letter_index(1001);
 		assert_eq!(coordinates.chunk, 1);
 		assert_eq!(coordinates.index, 1);
 	});
@@ -188,19 +188,19 @@ fn coordinates_from_letter_index() {
 #[test]
 fn letter_index_from_coordinates() {
 	new_test_ext().execute_with(|| {
-		let number = InsurancesModule::letter_index_from_coordinates(LetterCoordinates {
+		let number = LettersModule::letter_index_from_coordinates(LetterCoordinates {
 			chunk: 0,
 			index: 0,
 		});
 		assert_eq!(number, 0);
 		//
-		let number = InsurancesModule::letter_index_from_coordinates(LetterCoordinates {
+		let number = LettersModule::letter_index_from_coordinates(LetterCoordinates {
 			chunk: 0,
 			index: 1,
 		});
 		assert_eq!(number, 1);
 
-		let number = InsurancesModule::letter_index_from_coordinates(LetterCoordinates {
+		let number = LettersModule::letter_index_from_coordinates(LetterCoordinates {
 			chunk: 1,
 			index: 1,
 		});
@@ -213,22 +213,22 @@ fn mint_chunk() {
 	new_test_ext().execute_with(|| {
 		let referee_hash = H256::from(referee_id);
 		let chunk = 1;
-		assert_ok!(InsurancesModule::mint_chunk(referee_hash.clone(), chunk));
+		assert_ok!(LettersModule::mint_chunk(referee_hash.clone(), chunk));
 		assert_noop!(
-			InsurancesModule::mint_chunk(referee_hash.clone(), chunk),
-			"Insurance already contains_key"
+			LettersModule::mint_chunk(referee_hash.clone(), chunk),
+			"Letter already contains_key"
 		);
 
 		assert_eq!(
-			InsurancesModule::chunk_exists(referee_hash.clone(), chunk),
+			LettersModule::chunk_exists(referee_hash.clone(), chunk),
 			true
 		);
 		assert_eq!(
-			InsurancesModule::chunk_exists(referee_hash.clone(), 0),
+			LettersModule::chunk_exists(referee_hash.clone(), 0),
 			false
 		);
 		assert_eq!(
-			InsurancesModule::chunk_exists(referee_hash.clone(), 2),
+			LettersModule::chunk_exists(referee_hash.clone(), 2),
 			false
 		);
 	});
@@ -239,28 +239,28 @@ fn was_letter_canceled() {
 	new_test_ext().execute_with(|| {
 		let referee_hash = H256::from(referee_id);
 		let number = 1;
-		let coordinates = InsurancesModule::coordinates_from_letter_index(number);
+		let coordinates = LettersModule::coordinates_from_letter_index(number);
 		//Assert fresh insurances are unused
-		assert_ok!(InsurancesModule::mint_chunk(
+		assert_ok!(LettersModule::mint_chunk(
 			referee_hash.clone(),
 			coordinates.chunk
 		));
 		assert_eq!(
-			InsurancesModule::was_letter_canceled(referee_hash.clone(), number),
+			LettersModule::was_letter_canceled(referee_hash.clone(), number),
 			false
 		);
 		//Use insurances
-		assert_ok!(InsurancesModule::mark_letter_as_fraud(
+		assert_ok!(LettersModule::mark_letter_as_fraud(
 			referee_hash.clone(),
 			number
 		));
 		assert_eq!(
-			InsurancesModule::was_letter_canceled(referee_hash.clone(), number),
+			LettersModule::was_letter_canceled(referee_hash.clone(), number),
 			true
 		);
 		//Assert insurances in other chunks are unused
 		assert_eq!(
-			InsurancesModule::was_letter_canceled(referee_hash.clone(), 1001),
+			LettersModule::was_letter_canceled(referee_hash.clone(), 1001),
 			false
 		);
 	});
@@ -271,12 +271,12 @@ fn mark_letter_as_fraud() {
 	new_test_ext().execute_with(|| {
 		let referee_hash = H256::from(referee_id);
 		let number = 1;
-		assert_ok!(InsurancesModule::mark_letter_as_fraud(
+		assert_ok!(LettersModule::mark_letter_as_fraud(
 			referee_hash.clone(),
 			number
 		));
 		assert_eq!(
-			InsurancesModule::was_letter_canceled(referee_hash.clone(), number),
+			LettersModule::was_letter_canceled(referee_hash.clone(), number),
 			true
 		);
 	});
@@ -329,7 +329,7 @@ fn referee_has_not_enough_balance() {
 
 		
 		Balances::make_free_balance_be(&AccountId::from(Public::from_raw(referee_id)).into_account(), 9);
-		assert_noop!(InsurancesModule::reimburse(
+		assert_noop!(LettersModule::reimburse(
 			Origin::signed(AccountId::from(Public::from_raw(referee_id)).into_account()),
 			1 as u32,
 			H256::from(referee_id),
@@ -394,7 +394,7 @@ fn wrong_referee_sign() {
 			26,120,24,104,3,27,112,127,84,114,11,38,69,99,18,156,199,205,48,85,45,51,152,245,204,74,36,170,247,46,132,102,210,160,84,40,136,45,35,90,153,65,168,33,203,1,43,149,33,202,206,115,138,21,54,180,127,192,23,84,146,24,208,128,
 		];
 
-		assert_noop!(InsurancesModule::reimburse(
+		assert_noop!(LettersModule::reimburse(
 			Origin::signed(AccountId::from(Public::from_raw(referee_id)).into_account()),
 			1 as u32,
 			H256::from(referee_id),
@@ -454,7 +454,7 @@ fn wrong_worker_sign() {
 			0,120,24,104,3,27,112,127,84,114,11,38,69,99,18,156,199,205,48,85,45,51,152,245,204,74,36,170,247,46,132,102,210,160,84,40,136,45,35,90,153,65,168,33,203,1,43,149,33,202,206,115,138,21,54,180,127,192,23,84,146,24,208,128,
 		];
 
-		assert_noop!(InsurancesModule::reimburse(
+		assert_noop!(LettersModule::reimburse(
 			Origin::signed(AccountId::from(Public::from_raw(referee_id)).into_account()),
 			1 as u32,
 			H256::from(referee_id),
@@ -513,12 +513,12 @@ fn successful_reimburce() {
 
 		let number = 1;
 		assert_eq!(
-			InsurancesModule::was_letter_canceled(referee_hash.clone(), number),
+			LettersModule::was_letter_canceled(referee_hash.clone(), number),
 			false
 		);
 		let referee: AccountId32 = AccountId32::new(referee_id);
 
-		assert_ok!(InsurancesModule::reimburse(
+		assert_ok!(LettersModule::reimburse(
 			Origin::signed(AccountId::from(Public::from_raw(referee_id)).into_account()),
 			1 as u32,
 			H256::from(referee_id),
@@ -530,11 +530,11 @@ fn successful_reimburce() {
 		));
 
 		assert_eq!(
-			InsurancesModule::was_letter_canceled(referee_hash.clone(), number),
+			LettersModule::was_letter_canceled(referee_hash.clone(), number),
 			true
 		);
 
-		assert_noop!(InsurancesModule::reimburse(
+		assert_noop!(LettersModule::reimburse(
 			Origin::signed(AccountId::from(Public::from_raw(referee_id)).into_account()),
 			1 as u32,
 			H256::from(referee_id),
