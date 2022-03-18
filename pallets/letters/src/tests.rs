@@ -463,7 +463,7 @@ fn wrong_worker_sign() {
 			10,
 			H512::from(referee_signature),
 			H512::from(wrong_worker_signature)
-		), Error::<Test>::InvalidStudentSign);
+		), Error::<Test>::InvalidWorkerSign);
 	});
 }
 

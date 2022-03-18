@@ -100,7 +100,7 @@ pub mod pallet {
 	#[pallet::error]
 	pub enum Error<T> {
 		InvalidRefereeSign,
-		InvalidStudentSign,
+		InvalidWorkerSign,
 		InvalidLetterAmount,
 		RefereeBalanceIsNotEnough,
 		InvalidatedLetter,
@@ -160,7 +160,7 @@ pub mod pallet {
 
 			ensure!(
 				Self::signature_is_valid(worker_sign, skill_letter_data, worker_id.clone()),
-				Error::<T>::InvalidStudentSign
+				Error::<T>::InvalidWorkerSign
 			);
 
 			ensure!(
