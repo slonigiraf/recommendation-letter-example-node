@@ -121,7 +121,7 @@ pub mod pallet {
 			origin: OriginFor<T>,
 			letter_id: u32,
 			referee_id: H256,
-			student_id: H256,
+			worker_id: H256,
 			employer_id: H256,
 			ask_price: BalanceOf<T>,
 			teacher_sign: H512,
@@ -130,7 +130,7 @@ pub mod pallet {
 		{
 			let sender = ensure_signed(origin)?;
 
-			// 1 , referee_id, STUDENT_ID, 10 - see below
+			// 1 , referee_id, worker_id, 10 - see below
 		// [0, 0, 0, 1],
 		// [228,167,81,18,204,23,38,108,155,194,90,41,194,163,58,60,89,176,227,117,233,66,197,106,239,232,113,141,216,124,78,49],
 		// [178,77,57,242,36,161,83,238,138,176,187,13,7,59,100,92,45,157,163,43,133,176,199,22,118,202,133,229,161,199,255,75],
@@ -140,7 +140,7 @@ pub mod pallet {
 			let letter_id_bytes = &letter_id.to_be_bytes();
 			let referee_id_bytes = referee_id.as_bytes();
 			let employer_id_bytes = employer_id.as_bytes();
-			let student_id_bytes = student_id.as_bytes();
+			let worker_id_bytes = worker_id.as_bytes();
 			
 			let ask_price_u128 = TryInto::<u128>::try_into(ask_price).map_err(|_| Error::<T>::InvalidInsuranceAmount)?;
 			let ask_price_bytes = &ask_price_u128.to_be_bytes();
@@ -148,7 +148,7 @@ pub mod pallet {
 			let mut skill_receipt_data = Vec::new();
 			skill_receipt_data.extend_from_slice(letter_id_bytes);
 			skill_receipt_data.extend_from_slice(referee_id_bytes);
-			skill_receipt_data.extend_from_slice(student_id_bytes);
+			skill_receipt_data.extend_from_slice(worker_id_bytes);
 			skill_receipt_data.extend_from_slice(ask_price_bytes);
 
 			ensure!(
@@ -161,7 +161,7 @@ pub mod pallet {
 			skill_insurance_data.extend_from_slice(employer_id.as_bytes());
 
 			ensure!(
-				Self::signature_is_valid(student_sign, skill_insurance_data, student_id.clone()),
+				Self::signature_is_valid(student_sign, skill_insurance_data, worker_id.clone()),
 				Error::<T>::InvalidStudentSign
 			);
 

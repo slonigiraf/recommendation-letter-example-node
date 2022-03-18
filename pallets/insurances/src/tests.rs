@@ -124,7 +124,7 @@ pub const referee_id: [u8; 32] = [
 	66, 197, 106, 239, 232, 113, 141, 216, 124, 78, 49,
 ];
 
-pub const STUDENT_ID: [u8; 32] = [
+pub const worker_id: [u8; 32] = [
 	178, 77, 57, 242, 36, 161, 83, 238, 138, 176, 187, 13, 7, 59, 100, 92, 45, 157, 163, 43, 133,
 	176, 199, 22, 118, 202, 133, 229, 161, 199, 255, 75,
 ];
@@ -147,7 +147,7 @@ pub fn new_test_ext() -> sp_io::TestExternalities {
 	pallet_balances::GenesisConfig::<Test> {
 		balances: vec![
 			(AccountId::from(Public::from_raw(referee_id)).into_account(), INITIAL_BALANCE),
-			(AccountId::from(Public::from_raw(STUDENT_ID)).into_account(), INITIAL_BALANCE),
+			(AccountId::from(Public::from_raw(worker_id)).into_account(), INITIAL_BALANCE),
 			(AccountId::from(Public::from_raw(EMPLOYER_ID)).into_account(), INITIAL_BALANCE),
 			(AccountId::from(Public::from_raw(MALICIOUS_ID)).into_account(), INITIAL_BALANCE),
 		],
@@ -299,7 +299,7 @@ fn teacher_has_not_enough_balance() {
 
 		// Data to be signed by teacher:
 		// letter_id (u32) | teach_address [u8; 32] | stud_address [u8; 32] | amount (u128)
-		// 1 , referee_id, STUDENT_ID, 10 - see below:
+		// 1 , referee_id, worker_id, 10 - see below:
 		// [0, 0, 0, 1],
 		// [228,167,81,18,204,23,38,108,155,194,90,41,194,163,58,60,89,176,227,117,233,66,197,106,239,232,113,141,216,124,78,49],
 		// [178,77,57,242,36,161,83,238,138,176,187,13,7,59,100,92,45,157,163,43,133,176,199,22,118,202,133,229,161,199,255,75],
@@ -308,7 +308,7 @@ fn teacher_has_not_enough_balance() {
 		// Teacher signature: [96,20,15,21,11,137,10,192,129,3,154,34,203,118,28,19,176,54,165,181,227,156,70,197,73,86,226,111,137,243,69,95,41,74,25,254,228,34,212,189,141,134,194,44,229,172,27,43,67,73,73,58,61,63,37,176,120,195,153,198,46,42,231,129]
 		//
 		// DATA TO BE SIGNED BY STUDENT
-		// 1 , referee_id, STUDENT_ID, 10, TEACHER_SIGNATURE, EMPLOYER_ID
+		// 1 , referee_id, worker_id, 10, TEACHER_SIGNATURE, EMPLOYER_ID
 		// [0, 0, 0, 1],
 		// [228,167,81,18,204,23,38,108,155,194,90,41,194,163,58,60,89,176,227,117,233,66,197,106,239,232,113,141,216,124,78,49],
 		// [178,77,57,242,36,161,83,238,138,176,187,13,7,59,100,92,45,157,163,43,133,176,199,22,118,202,133,229,161,199,255,75],
@@ -333,7 +333,7 @@ fn teacher_has_not_enough_balance() {
 			Origin::signed(AccountId::from(Public::from_raw(referee_id)).into_account()),
 			1 as u32,
 			H256::from(referee_id),
-			H256::from(STUDENT_ID),
+			H256::from(worker_id),
 			H256::from(EMPLOYER_ID),
 			10,
 			H512::from(teacher_signature),
@@ -359,7 +359,7 @@ fn wrong_teacher_sign() {
 
 		// Data to be signed by teacher:
 		// letter_id (u32) | teach_address [u8; 32] | stud_address [u8; 32] | amount (u128)
-		// 1 , referee_id, STUDENT_ID, 10 - see below:
+		// 1 , referee_id, worker_id, 10 - see below:
 		// [0, 0, 0, 1],
 		// [228,167,81,18,204,23,38,108,155,194,90,41,194,163,58,60,89,176,227,117,233,66,197,106,239,232,113,141,216,124,78,49],
 		// [178,77,57,242,36,161,83,238,138,176,187,13,7,59,100,92,45,157,163,43,133,176,199,22,118,202,133,229,161,199,255,75],
@@ -368,7 +368,7 @@ fn wrong_teacher_sign() {
 		// Teacher signature: [96,20,15,21,11,137,10,192,129,3,154,34,203,118,28,19,176,54,165,181,227,156,70,197,73,86,226,111,137,243,69,95,41,74,25,254,228,34,212,189,141,134,194,44,229,172,27,43,67,73,73,58,61,63,37,176,120,195,153,198,46,42,231,129]
 		//
 		// DATA TO BE SIGNED BY STUDENT
-		// 1 , referee_id, STUDENT_ID, 10, TEACHER_SIGNATURE, EMPLOYER_ID
+		// 1 , referee_id, worker_id, 10, TEACHER_SIGNATURE, EMPLOYER_ID
 		// [0, 0, 0, 1],
 		// [228,167,81,18,204,23,38,108,155,194,90,41,194,163,58,60,89,176,227,117,233,66,197,106,239,232,113,141,216,124,78,49],
 		// [178,77,57,242,36,161,83,238,138,176,187,13,7,59,100,92,45,157,163,43,133,176,199,22,118,202,133,229,161,199,255,75],
@@ -398,7 +398,7 @@ fn wrong_teacher_sign() {
 			Origin::signed(AccountId::from(Public::from_raw(referee_id)).into_account()),
 			1 as u32,
 			H256::from(referee_id),
-			H256::from(STUDENT_ID),
+			H256::from(worker_id),
 			H256::from(EMPLOYER_ID),
 			10,
 			H512::from(wrong_teacher_signature),
@@ -422,7 +422,7 @@ fn wrong_student_sign() {
 
 		// Data to be signed by teacher:
 		// letter_id (u32) | teach_address [u8; 32] | stud_address [u8; 32] | amount (u128)
-		// 1 , referee_id, STUDENT_ID, 10 - see below:
+		// 1 , referee_id, worker_id, 10 - see below:
 		// [0, 0, 0, 1],
 		// [228,167,81,18,204,23,38,108,155,194,90,41,194,163,58,60,89,176,227,117,233,66,197,106,239,232,113,141,216,124,78,49],
 		// [178,77,57,242,36,161,83,238,138,176,187,13,7,59,100,92,45,157,163,43,133,176,199,22,118,202,133,229,161,199,255,75],
@@ -431,7 +431,7 @@ fn wrong_student_sign() {
 		// Teacher signature: [96,20,15,21,11,137,10,192,129,3,154,34,203,118,28,19,176,54,165,181,227,156,70,197,73,86,226,111,137,243,69,95,41,74,25,254,228,34,212,189,141,134,194,44,229,172,27,43,67,73,73,58,61,63,37,176,120,195,153,198,46,42,231,129]
 		//
 		// DATA TO BE SIGNED BY STUDENT
-		// 1 , referee_id, STUDENT_ID, 10, TEACHER_SIGNATURE, EMPLOYER_ID
+		// 1 , referee_id, worker_id, 10, TEACHER_SIGNATURE, EMPLOYER_ID
 		// [0, 0, 0, 1],
 		// [228,167,81,18,204,23,38,108,155,194,90,41,194,163,58,60,89,176,227,117,233,66,197,106,239,232,113,141,216,124,78,49],
 		// [178,77,57,242,36,161,83,238,138,176,187,13,7,59,100,92,45,157,163,43,133,176,199,22,118,202,133,229,161,199,255,75],
@@ -458,7 +458,7 @@ fn wrong_student_sign() {
 			Origin::signed(AccountId::from(Public::from_raw(referee_id)).into_account()),
 			1 as u32,
 			H256::from(referee_id),
-			H256::from(STUDENT_ID),
+			H256::from(worker_id),
 			H256::from(EMPLOYER_ID),
 			10,
 			H512::from(teacher_signature),
@@ -483,7 +483,7 @@ fn successful_reimburce() {
 
 		// Data to be signed by teacher:
 		// letter_id (u32) | teach_address [u8; 32] | stud_address [u8; 32] | amount (u128)
-		// 1 , referee_id, STUDENT_ID, 10 - see below:
+		// 1 , referee_id, worker_id, 10 - see below:
 		// [0, 0, 0, 1],
 		// [228,167,81,18,204,23,38,108,155,194,90,41,194,163,58,60,89,176,227,117,233,66,197,106,239,232,113,141,216,124,78,49],
 		// [178,77,57,242,36,161,83,238,138,176,187,13,7,59,100,92,45,157,163,43,133,176,199,22,118,202,133,229,161,199,255,75],
@@ -492,7 +492,7 @@ fn successful_reimburce() {
 		// Teacher signature: [96,20,15,21,11,137,10,192,129,3,154,34,203,118,28,19,176,54,165,181,227,156,70,197,73,86,226,111,137,243,69,95,41,74,25,254,228,34,212,189,141,134,194,44,229,172,27,43,67,73,73,58,61,63,37,176,120,195,153,198,46,42,231,129]
 		//
 		// DATA TO BE SIGNED BY STUDENT
-		// 1 , referee_id, STUDENT_ID, 10, TEACHER_SIGNATURE, EMPLOYER_ID
+		// 1 , referee_id, worker_id, 10, TEACHER_SIGNATURE, EMPLOYER_ID
 		// [0, 0, 0, 1],
 		// [228,167,81,18,204,23,38,108,155,194,90,41,194,163,58,60,89,176,227,117,233,66,197,106,239,232,113,141,216,124,78,49],
 		// [178,77,57,242,36,161,83,238,138,176,187,13,7,59,100,92,45,157,163,43,133,176,199,22,118,202,133,229,161,199,255,75],
@@ -522,7 +522,7 @@ fn successful_reimburce() {
 			Origin::signed(AccountId::from(Public::from_raw(referee_id)).into_account()),
 			1 as u32,
 			H256::from(referee_id),
-			H256::from(STUDENT_ID),
+			H256::from(worker_id),
 			H256::from(EMPLOYER_ID),
 			10,
 			H512::from(teacher_signature),
@@ -538,7 +538,7 @@ fn successful_reimburce() {
 			Origin::signed(AccountId::from(Public::from_raw(referee_id)).into_account()),
 			1 as u32,
 			H256::from(referee_id),
-			H256::from(STUDENT_ID),
+			H256::from(worker_id),
 			H256::from(EMPLOYER_ID),
 			10,
 			H512::from(teacher_signature),
