@@ -275,9 +275,9 @@ impl<T: Config> Pallet<T> {
 
 	fn mark_letter_as_fraud(
 		referee: H256,
-		insurance_number: usize,
+		letter_number: usize,
 	) -> DispatchResult {
-		let coordinates = Self::coordinates_from_letter_index(insurance_number);
+		let coordinates = Self::coordinates_from_letter_index(letter_number);
 		if !Self::chunk_exists(referee, coordinates.chunk) {
 			Self::mint_chunk(referee, coordinates.chunk);
 		}
