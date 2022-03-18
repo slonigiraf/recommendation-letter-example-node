@@ -188,19 +188,19 @@ fn coordinates_from_letter_index() {
 #[test]
 fn insurance_index_from_coordinates() {
 	new_test_ext().execute_with(|| {
-		let number = InsurancesModule::insurance_index_from_coordinates(InsuranceCoordinates {
+		let number = InsurancesModule::insurance_index_from_coordinates(LetterCoordinates {
 			chunk: 0,
 			index: 0,
 		});
 		assert_eq!(number, 0);
 		//
-		let number = InsurancesModule::insurance_index_from_coordinates(InsuranceCoordinates {
+		let number = InsurancesModule::insurance_index_from_coordinates(LetterCoordinates {
 			chunk: 0,
 			index: 1,
 		});
 		assert_eq!(number, 1);
 
-		let number = InsurancesModule::insurance_index_from_coordinates(InsuranceCoordinates {
+		let number = InsurancesModule::insurance_index_from_coordinates(LetterCoordinates {
 			chunk: 1,
 			index: 1,
 		});

@@ -41,7 +41,7 @@ mod weights;
 pub use weights::WeightInfo;
 
 // Struct for holding Insurance information.
-pub struct InsuranceCoordinates {
+pub struct LetterCoordinates {
 	chunk: usize,
 	index: usize,
 }
@@ -250,12 +250,12 @@ impl<T: Config> Pallet<T> {
 		<OwnedLetersArray<T>>::contains_key((to.clone(), chunk as u64))
 	}
 
-	fn coordinates_from_letter_index(number: usize) -> InsuranceCoordinates {
+	fn coordinates_from_letter_index(number: usize) -> LetterCoordinates {
 		let chunk = number/INSURANCE_PER_CHUNK;
 		let index = number%INSURANCE_PER_CHUNK;
-		InsuranceCoordinates { chunk, index }
+		LetterCoordinates { chunk, index }
 	}
-	fn insurance_index_from_coordinates(coordinates: InsuranceCoordinates) -> usize {
+	fn insurance_index_from_coordinates(coordinates: LetterCoordinates) -> usize {
 		coordinates.chunk*INSURANCE_PER_CHUNK+coordinates.index
 	}
 
