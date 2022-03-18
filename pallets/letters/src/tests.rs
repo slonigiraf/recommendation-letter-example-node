@@ -7,15 +7,12 @@ use sp_runtime::{
 	testing::Header,
 	testing::TestXt,
 	traits::{BlakeTwo256, IdentityLookup},
-	AccountId32,
 };
 
 type UncheckedExtrinsic = frame_system::mocking::MockUncheckedExtrinsic<Test>;
 type Block = frame_system::mocking::MockBlock<Test>;
 
 pub type AccountId = <<Signature as Verify>::Signer as IdentifyAccount>::AccountId;
-
-use sp_core::testing::SR25519;
 
 // Configure a mock runtime to test the pallet.
 frame_support::construct_runtime!(
@@ -167,8 +164,6 @@ pub fn new_test_ext() -> sp_io::TestExternalities {
 	t
 }
 
-use hex_literal::hex;
-
 #[test]
 fn coordinates_from_letter_index() {
 	new_test_ext().execute_with(|| {
@@ -285,10 +280,6 @@ fn mark_letter_as_fraud() {
 #[test]
 fn referee_has_not_enough_balance() {
 	new_test_ext().execute_with(|| {
-		
-		let referee: AccountId32 = AccountId32::new(REFEREE_ID);
-		let referee_hash = H256::from(REFEREE_ID);
-
 		//Data to be signed is represented as u8 array
 		//letter_id (u32) | teach_address [u8; 32] | stud_address [u8; 32] | amount (u128)
 
@@ -346,9 +337,6 @@ fn referee_has_not_enough_balance() {
 #[test]
 fn wrong_referee_sign() {
 	new_test_ext().execute_with(|| {
-		
-		let referee: AccountId32 = AccountId32::new(REFEREE_ID);
-
 		//Data to be signed is represented as u8 array
 		//letter_id (u32) | teach_address [u8; 32] | stud_address [u8; 32] | amount (u128)
 
@@ -410,8 +398,6 @@ fn wrong_referee_sign() {
 #[test]
 fn wrong_worker_sign() {
 	new_test_ext().execute_with(|| {
-		let referee: AccountId32 = AccountId32::new(REFEREE_ID);
-
 		//Data to be signed is represented as u8 array
 		//letter_id (u32) | teach_address [u8; 32] | stud_address [u8; 32] | amount (u128)
 
@@ -470,7 +456,6 @@ fn wrong_worker_sign() {
 #[test]
 fn successful_reimburce() {
 	new_test_ext().execute_with(|| {
-		let referee: AccountId32 = AccountId32::new(REFEREE_ID);
 		let referee_hash = H256::from(REFEREE_ID);
 
 		//Data to be signed is represented as u8 array
@@ -516,7 +501,6 @@ fn successful_reimburce() {
 			LettersModule::was_letter_canceled(referee_hash.clone(), number),
 			false
 		);
-		let referee: AccountId32 = AccountId32::new(REFEREE_ID);
 
 		assert_ok!(LettersModule::reimburse(
 			Origin::signed(AccountId::from(Public::from_raw(REFEREE_ID)).into_account()),

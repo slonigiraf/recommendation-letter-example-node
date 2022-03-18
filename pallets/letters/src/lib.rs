@@ -3,17 +3,14 @@
 use frame_support::{
 	pallet_prelude::*,
 	traits::{Randomness, Currency, ExistenceRequirement},
-	transactional,
 };
 use frame_system::{
 	pallet_prelude::*,
 };
 use sp_std::{
 	prelude::*,
-	convert::{TryFrom, TryInto},
+	convert::{TryInto},
 };
-
-use sp_io::hashing::blake2_128;
 
 use sp_core::sr25519::{
 	// Pair, 
@@ -24,11 +21,6 @@ use sp_runtime::traits::{Verify, IdentifyAccount};
 use sp_runtime::{
 	AccountId32,
 };
-
-#[cfg(feature = "std")]
-use serde::{Deserialize, Serialize};
-
-
 
 pub use pallet::*;
 
@@ -126,7 +118,7 @@ pub mod pallet {
 			worker_sign: H512,
 		) -> DispatchResultWithPostInfo 
 		{
-			let sender = ensure_signed(origin)?;
+			let _sender = ensure_signed(origin)?;
 
 			// 1 , referee_id, worker_id, 10 - see below
 		// [0, 0, 0, 1],
@@ -175,7 +167,7 @@ pub mod pallet {
 				ExistenceRequirement::KeepAlive,
 			).map_err(|_| Error::<T>::RefereeBalanceIsNotEnough)?;
 
-			Self::mark_letter_as_fraud(referee_id, letter_id as usize);
+			Self::mark_letter_as_fraud(referee_id, letter_id as usize)?;
 
 			Ok(().into())
 		}
@@ -279,7 +271,7 @@ impl<T: Config> Pallet<T> {
 	) -> DispatchResult {
 		let coordinates = Self::coordinates_from_letter_index(letter_number);
 		if !Self::chunk_exists(referee, coordinates.chunk) {
-			Self::mint_chunk(referee, coordinates.chunk);
+			Self::mint_chunk(referee, coordinates.chunk)?;
 		}
 		let mut data = <OwnedLetersArray<T>>::get((referee.clone(), coordinates.chunk as u64));
 		data[coordinates.index] = false;
