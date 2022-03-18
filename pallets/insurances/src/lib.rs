@@ -164,7 +164,7 @@ pub mod pallet {
 			);
 
 			ensure!(
-				! Self::was_letter_used(referee_id, letter_id as usize),
+				! Self::was_letter_canceled(referee_id, letter_id as usize),
 				Error::<T>::InvalidatedLetter
 			);
 
@@ -259,7 +259,7 @@ impl<T: Config> Pallet<T> {
 		coordinates.chunk*INSURANCE_PER_CHUNK+coordinates.index
 	}
 
-	fn was_letter_used(
+	fn was_letter_canceled(
 		referee: H256,
 		number: usize,
 	) -> bool {
