@@ -63,7 +63,7 @@ pub mod pallet {
 	//Letter storage
 	//Keeps track of what accounts issued which letters
 	#[pallet::storage]
-	#[pallet::getter(fn letter_of_owner_by_index)]
+	#[pallet::getter(fn was_letter_used)]
 	pub(super) type OwnedLetersArray<T: Config> =
 	StorageMap<_, Twox64Concat, (H256, u64), Vec<bool>, ValueQuery>;
 	//
@@ -175,13 +175,7 @@ pub mod pallet {
 	}
 }
 
-impl<T: Config> Pallet<T> where T::AccountId: From<<<Signature as Verify>::Signer as IdentifyAccount>::AccountId>  {
-	fn ref_test (
-		account_id: <<Signature as Verify>::Signer as IdentifyAccount>::AccountId,
-	) {
-		account_id.as_array_ref();
-	}
-}
+impl<T: Config> Pallet<T> where T::AccountId: From<<<Signature as Verify>::Signer as IdentifyAccount>::AccountId>  {}
 
 const INSURANCE_PER_CHUNK: usize = 1000;
 impl<T: Config> Pallet<T> {
@@ -246,6 +240,7 @@ impl<T: Config> Pallet<T> {
 		let index = number%INSURANCE_PER_CHUNK;
 		LetterCoordinates { chunk, index }
 	}
+	#[allow(dead_code)]
 	fn letter_index_from_coordinates(coordinates: LetterCoordinates) -> usize {
 		coordinates.chunk*INSURANCE_PER_CHUNK+coordinates.index
 	}

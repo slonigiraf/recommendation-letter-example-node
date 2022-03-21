@@ -271,7 +271,7 @@ impl pallet_sudo::Config for Runtime {
 	type Call = Call;
 }
 
-/// Configure the pallet-letters.
+// Configure the pallet-letters.
 parameter_types! {
 	pub const DefaultDifficulty: u32 = 100000;
 }
