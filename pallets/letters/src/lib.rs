@@ -106,16 +106,6 @@ pub mod pallet {
 
 	#[pallet::call]
 	impl<T:Config> Pallet<T> {
-		// tmp code to practice on benchmarks
-		#[pallet::weight(100)]
-		pub fn create(
-			origin: OriginFor<T>,
-		) -> DispatchResultWithPostInfo 
-		{
-			let _sender = ensure_signed(origin)?;
-			Ok(().into())
-		}
-		
 		// reimburse
 		// Letter issuer should pay initially defined Balance sum
 		#[pallet::weight(100)]

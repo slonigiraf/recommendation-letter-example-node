@@ -36,7 +36,10 @@ use sp_std::marker::PhantomData;
 /// Weight functions for pallet_letters.
 pub struct WeightInfo<T>(PhantomData<T>);
 impl<T: frame_system::Config> pallet_letters::WeightInfo for WeightInfo<T> {
-	fn create() -> Weight {
-		(2_000_000 as Weight)
+	// Storage: Letters OwnedLetersArray (r:1 w:1)
+	fn reimburse() -> Weight {
+		(217_000_000 as Weight)
+			.saturating_add(T::DbWeight::get().reads(1 as Weight))
+			.saturating_add(T::DbWeight::get().writes(1 as Weight))
 	}
 }
