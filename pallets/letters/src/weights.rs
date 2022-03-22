@@ -27,10 +27,6 @@ use sp_std::marker::PhantomData;
 /// Weight functions needed for pallet_letters.
 pub trait WeightInfo {
 	fn create() -> Weight;
-	fn breed() -> Weight;
-	fn transfer() -> Weight;
-	fn set_price() -> Weight;
-	fn buy() -> Weight;
 }
 
 /// Weights for pallet_letters using the Substrate node and recommended hardware.
@@ -41,26 +37,6 @@ impl<T: frame_system::Config> WeightInfo for SubstrateWeight<T> {
 			.saturating_add(T::DbWeight::get().reads(5 as Weight))
 			.saturating_add(T::DbWeight::get().writes(4 as Weight))
 	}
-	fn breed() -> Weight {
-		(45_000_000 as Weight)
-			.saturating_add(T::DbWeight::get().reads(7 as Weight))
-			.saturating_add(T::DbWeight::get().writes(4 as Weight))
-	}
-	fn transfer() -> Weight {
-		(27_000_000 as Weight)
-			.saturating_add(T::DbWeight::get().reads(2 as Weight))
-			.saturating_add(T::DbWeight::get().writes(4 as Weight))
-	}
-	fn set_price() -> Weight {
-		(23_000_000 as Weight)
-			.saturating_add(T::DbWeight::get().reads(3 as Weight))
-			.saturating_add(T::DbWeight::get().writes(1 as Weight))
-	}
-	fn buy() -> Weight {
-		(70_000_000 as Weight)
-			.saturating_add(T::DbWeight::get().reads(4 as Weight))
-			.saturating_add(T::DbWeight::get().writes(5 as Weight))
-	}
 }
 
 // For backwards compatibility and tests
@@ -69,25 +45,5 @@ impl WeightInfo for () {
 		(37_000_000 as Weight)
 			.saturating_add(RocksDbWeight::get().reads(5 as Weight))
 			.saturating_add(RocksDbWeight::get().writes(4 as Weight))
-	}
-	fn breed() -> Weight {
-		(45_000_000 as Weight)
-			.saturating_add(RocksDbWeight::get().reads(7 as Weight))
-			.saturating_add(RocksDbWeight::get().writes(4 as Weight))
-	}
-	fn transfer() -> Weight {
-		(27_000_000 as Weight)
-			.saturating_add(RocksDbWeight::get().reads(2 as Weight))
-			.saturating_add(RocksDbWeight::get().writes(4 as Weight))
-	}
-	fn set_price() -> Weight {
-		(23_000_000 as Weight)
-			.saturating_add(RocksDbWeight::get().reads(3 as Weight))
-			.saturating_add(RocksDbWeight::get().writes(1 as Weight))
-	}
-	fn buy() -> Weight {
-		(70_000_000 as Weight)
-			.saturating_add(RocksDbWeight::get().reads(4 as Weight))
-			.saturating_add(RocksDbWeight::get().writes(5 as Weight))
 	}
 }

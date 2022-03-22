@@ -3,6 +3,7 @@
 use frame_support::{
 	pallet_prelude::*,
 	traits::{Randomness, Currency, ExistenceRequirement},
+	transactional,
 };
 use frame_system::{
 	pallet_prelude::*,
@@ -43,6 +44,8 @@ pub struct LetterCoordinates {
 // 	type TheAccountId;
 //     fn format(data: Self::TheAccountId);
 // }
+
+pub type AccountId = <<Signature as Verify>::Signer as IdentifyAccount>::AccountId;
 
 #[frame_support::pallet]
 pub mod pallet {
@@ -102,10 +105,21 @@ pub mod pallet {
 	pub struct Pallet<T>(_);
 
 	#[pallet::call]
-	impl<T:Config> Pallet<T> where T::AccountId: From<<<Signature as Verify>::Signer as IdentifyAccount>::AccountId> {
+	impl<T:Config> Pallet<T> {
+		// tmp code to practice on benchmarks
+		#[pallet::weight(100)]
+		pub fn create(
+			origin: OriginFor<T>,
+		) -> DispatchResultWithPostInfo 
+		{
+			let _sender = ensure_signed(origin)?;
+			Ok(().into())
+		}
+		
 		// reimburse
 		// Letter issuer should pay initially defined Balance sum
 		#[pallet::weight(100)]
+		#[transactional]
 		pub fn reimburse(
 			origin: OriginFor<T>,
 			letter_id: u32,
@@ -175,7 +189,7 @@ pub mod pallet {
 	}
 }
 
-impl<T: Config> Pallet<T> where T::AccountId: From<<<Signature as Verify>::Signer as IdentifyAccount>::AccountId>  {}
+impl<T: Config> Pallet<T>  {}
 
 const INSURANCE_PER_CHUNK: usize = 1000;
 impl<T: Config> Pallet<T> {

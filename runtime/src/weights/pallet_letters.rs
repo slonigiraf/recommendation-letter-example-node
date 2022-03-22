@@ -32,24 +32,4 @@ impl<T: frame_system::Config> pallet_letters::WeightInfo for WeightInfo<T> {
 			.saturating_add(T::DbWeight::get().reads(5 as Weight))
 			.saturating_add(T::DbWeight::get().writes(4 as Weight))
 	}
-	fn breed() -> Weight {
-		(46_000_000 as Weight)
-			.saturating_add(T::DbWeight::get().reads(7 as Weight))
-			.saturating_add(T::DbWeight::get().writes(4 as Weight))
-	}
-	fn transfer() -> Weight {
-		(26_000_000 as Weight)
-			.saturating_add(T::DbWeight::get().reads(2 as Weight))
-			.saturating_add(T::DbWeight::get().writes(4 as Weight))
-	}
-	fn set_price() -> Weight {
-		(21_000_000 as Weight)
-			.saturating_add(T::DbWeight::get().reads(3 as Weight))
-			.saturating_add(T::DbWeight::get().writes(1 as Weight))
-	}
-	fn buy() -> Weight {
-		(67_000_000 as Weight)
-			.saturating_add(T::DbWeight::get().reads(4 as Weight))
-			.saturating_add(T::DbWeight::get().writes(5 as Weight))
-	}
 }
