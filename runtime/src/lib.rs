@@ -485,6 +485,7 @@ impl_runtime_apis! {
 			list_benchmark!(list, extra, pallet_balances, Balances);
 			list_benchmark!(list, extra, pallet_timestamp, Timestamp);
 			list_benchmark!(list, extra, pallet_template, TemplateModule);
+			list_benchmark!(list, extra, pallet_letters, Letters);
 
 			let storage_info = AllPalletsWithSystem::storage_info();
 

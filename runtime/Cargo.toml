@@ -196,10 +196,10 @@ runtime-benchmarks = [
     'frame-system/runtime-benchmarks',
     'hex-literal',
     'pallet-balances/runtime-benchmarks',
-    'pallet-template/runtime-benchmarks',
-    'pallet-letters/runtime-benchmarks',
     'pallet-timestamp/runtime-benchmarks',
     'sp-runtime/runtime-benchmarks',
+    'pallet-letters/runtime-benchmarks',
+    'pallet-template/runtime-benchmarks',
 ]
 std = [
     'codec/std',
@@ -227,4 +227,5 @@ std = [
     'sp-std/std',
     'sp-transaction-pool/std',
     'sp-version/std',
+    'pallet-letters/std',
 ]
