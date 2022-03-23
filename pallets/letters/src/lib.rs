@@ -108,7 +108,7 @@ pub mod pallet {
 	impl<T:Config> Pallet<T> {
 		// reimburse
 		// Letter issuer should pay initially defined Balance sum
-		#[pallet::weight(100)]
+		#[pallet::weight(T::WeightInfo::reimburse())]
 		#[transactional]
 		pub fn reimburse(
 			origin: OriginFor<T>,

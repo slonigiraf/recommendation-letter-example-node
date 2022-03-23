@@ -1,8 +1,7 @@
 use super::*;
 
-use crate::Pallet as Letters;
 use frame_system::RawOrigin;
-use frame_benchmarking::{benchmarks, impl_benchmark_test_suite, whitelisted_caller, account};
+use frame_benchmarking::{benchmarks, impl_benchmark_test_suite, whitelisted_caller};
 
 
 pub const REFEREE_ID: [u8; 32] = [
@@ -24,8 +23,6 @@ pub const EMPLOYER_ID: [u8; 32] = [
    80, 155,  66, 230, 239, 184,  55,  95,
    86,  47,  88, 165,  84, 213, 134,  14,
 ];
-
-pub type AccountId = <<Signature as Verify>::Signer as IdentifyAccount>::AccountId;
 
 benchmarks! {
 	reimburse {
@@ -65,4 +62,4 @@ benchmarks! {
 	
 }
 
-impl_benchmark_test_suite!(Letters, crate::tests::new_test_ext(), crate::tests::Test,);
+impl_benchmark_test_suite!(Pallet, crate::tests::new_test_ext(), crate::tests::Test,);
