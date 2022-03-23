@@ -6,7 +6,7 @@ Was built with [Substrate Node Template](https://github.com/substrate-developer-
 
 ### Rust Setup
 
-Install Rust [setup instructions](https://docs.substrate.io/tutorials/v3/create-your-first-substrate-chain/).
+Install Rust. See [setup instructions](https://docs.substrate.io/tutorials/v3/create-your-first-substrate-chain/).
 
 
 ### Build
@@ -25,7 +25,7 @@ cargo build --release
 
 ### Connect with Example UI Front-end
 
-Open [UI](https://github.com/slonigiraf/recommendation-letter-example-ui).
+Run [UI](https://github.com/slonigiraf/recommendation-letter-example-ui) with yarn.
 
 ### Run in Docker
 
@@ -35,6 +35,7 @@ First, install [Docker](https://docs.docker.com/get-docker/) and
 Then run the following command to start a single node development chain.
 
 ```bash
+cd recommendation-letter-example-node
 rm -rf ~/.cargo/registry
 touch .local
 ./scripts/docker_run.sh
