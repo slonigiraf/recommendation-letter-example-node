@@ -5,7 +5,6 @@ use frame_support::{assert_noop, assert_ok, parameter_types};
 use sp_core::H256;
 use sp_runtime::{
 	testing::Header,
-	testing::TestXt,
 	traits::{BlakeTwo256, IdentityLookup},
 };
 
@@ -99,22 +98,6 @@ impl Config for Test {
 	type WeightInfo = ();
 	type DefaultDifficulty = DefaultDifficulty;
 }
-
-
-// impl FormatData for Test {
-// 	type TheAccountId = AccountId;
-// 	fn format(data: Self::TheAccountId){}
-// }
-
-/// An extrinsic type used for tests.
-pub type Extrinsic = TestXt<Call, ()>;
-
-// /// Generate a crypto pair from seed.
-// pub fn get_from_seed<TPublic: Public>(seed: &str) -> <TPublic::Pair as Pair>::Public {
-// 	TPublic::Pair::from_string(&format!("//{}", seed), None)
-// 		.expect("static values are valid; qed")
-// 		.public()
-// }
 
 pub const REFEREE_ID: [u8; 32] = [
 	228, 167, 81, 18, 204, 23, 38, 108, 155, 194, 90, 41, 194, 163, 58, 60, 89, 176, 227, 117, 233,
