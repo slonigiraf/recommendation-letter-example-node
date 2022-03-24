@@ -36,7 +36,6 @@ Then run the following command to start a single node development chain.
 
 ```bash
 cd recommendation-letter-example-node
-rm -rf ~/.cargo/registry
 touch .local
 ./scripts/docker_run.sh
 ```
