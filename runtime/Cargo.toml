@@ -18,7 +18,7 @@ version = '3.0.0-monthly-2021-09+1'
 
 [dependencies.pallet-letters]
 default-features = false
-git = 'https://github.com/slonigiraf/recommendation-letter.git'
+git = 'https://github.com/slonigiraf/recommendation-letter.git#80981786efee714d28e248d028d7ada43575226f'
 
 [build-dependencies.substrate-wasm-builder]
 git = 'https://github.com/paritytech/substrate.git'
